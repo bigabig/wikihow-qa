@@ -1,6 +1,9 @@
 # dataset
 dataset/
 
+#docker data
+docker/data/
+
 # Created by https://www.gitignore.io/api/java,java-web,intellij+all
 # Edit at https://www.gitignore.io/?templates=java,java-web,intellij+all
 
