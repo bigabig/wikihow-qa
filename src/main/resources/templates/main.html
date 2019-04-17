@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>WikiHow QA</title>
+    <!--/*/<th:block th:include="fragments/general :: headerfiles"></th:block> /*/-->
+</head>
+<body class="w3-theme-l5">
+    <!-- Navbar -->
+    <div th:include="fragments/general :: header"></div>
+
+    <!-- Content -->
+    <p th:text="${welcome}">Hello World!</p>
+
+    <!-- Footer -->
+    <div th:replace="fragments/general :: footer"></div>
+
+    <!-- Scripts -->
+    <script th:replace="fragments/general :: scripts"></script>
+</body>
+</html>
