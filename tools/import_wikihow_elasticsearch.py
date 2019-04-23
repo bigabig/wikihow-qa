@@ -20,6 +20,7 @@ def main():
 			print("Indexing "+filename)
 			with io.open(filepath, 'r', encoding="utf8") as file:
 				json_data = json.load(file)
+				json_data['filename'] = filename
 				es.index(index=args.index, doc_type="_doc", id=id, body=json_data)
 				id = id + 1
 		else:
