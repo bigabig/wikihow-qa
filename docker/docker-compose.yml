@@ -23,7 +23,6 @@ services:
       - anet
     environment:
       - cluster.name=escluster
-      - bootstrap.memory_lock=true
       - xpack.security.enabled=false
       - http.host=0.0.0.0
       - transport.host=0.0.0.0
@@ -90,4 +89,13 @@ services:
      - /sessions
     networks:
      - anet
-   # END: phpmyadmin
+  # END: phpmyadmin
+   
+  # BEGIN: TEXTRANK
+  textrank:
+    image: bigabig/wikihow-textrank:latest
+    ports:
+      - 5000:5000
+    networks:
+      - anet
+  # END: TEXTRANK
