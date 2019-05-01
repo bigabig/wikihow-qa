@@ -29,10 +29,16 @@
     </div>
 
     <div th:if="${result}">
-        <p th:text="${result.getTitle()}"></p>
+        <h2 th:text="${result.getTitle()}"></h2>
+        <h4>Target Summary:</h4>
+
         <ul>
             <li th:each="answer : ${result.getSummary()}" th:text="${answer}"></li>
         </ul>
+        <h4>Full Article</h4>
+        <p th:text="${result.getArticle()}"></p>
+        <h4>Text-Rank Summary</h4>
+        <p th:text="${wikihowtextrank}"></p>
     </div>
 
     <!-- Footer -->
