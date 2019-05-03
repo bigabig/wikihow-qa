@@ -1,6 +1,10 @@
 # Created by https://www.gitignore.io/api/venv,flask,python,pycharm+all
 # Edit at https://www.gitignore.io/?templates=venv,flask,python,pycharm+all
 
+### GLOVE EMBEDDINGS ###
+
+glove.6B.100d.txt
+
 ### Flask ###
 instance/*
 !instance/.gitignore
