@@ -99,3 +99,13 @@ services:
     networks:
       - anet
   # END: TEXTRANK
+
+  # BEGIN: NETWORK
+  network:
+    image: bigabig/wikihow-network:latest
+    ports:
+      - 5001:5000
+    networks:
+      - anet
+  # END: NETwORK
+

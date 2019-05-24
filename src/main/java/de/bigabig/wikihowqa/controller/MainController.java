@@ -3,6 +3,7 @@ package de.bigabig.wikihowqa.controller;
 import com.google.gson.Gson;
 import de.bigabig.wikihowqa.model.SearchQuery;
 import de.bigabig.wikihowqa.model.WikihowArticle;
+import de.bigabig.wikihowqa.model.WikihowNetworkRequest;
 import de.bigabig.wikihowqa.model.WikihowTextrankRequest;
 import de.bigabig.wikihowqa.service.ElasticSearchService;
 import de.bigabig.wikihowqa.service.RestService;
@@ -55,6 +56,15 @@ public class MainController {
             if(response != null) {
                 logger.info("Wikihow-Textrank Response: " + response);
                 model.addAttribute("wikihowtextrank", response);
+            }
+
+            // try to get summarization from wikihow-network
+            WikihowNetworkRequest request2 = new WikihowNetworkRequest("tim", article.getArticle());
+            String response2 = restService.sendPostRequest("http://localhost:5001/summarize", gson.toJson(request2));
+
+            if(response2 != null) {
+                logger.info("Wikihow-Network Response: " + response2);
+                model.addAttribute("wikihownetwork", response2);
             }
         }
 
