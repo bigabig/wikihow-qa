@@ -14,7 +14,7 @@ import torch.nn.functional as F
 import pandas as pd
 
 # HYPER PARAMETERS
-max_seq_length = 256  # used in the TextDataset class
+max_seq_length = 512  # used in the TextDataset class
 batch_size = 16
 num_epochs = 10
 

@@ -24,7 +24,7 @@ class Norm(nn.Module):
 
 def attention(q, k, v, d_k, mask=None, dropout=None):
     
-    scores = torch.matmul(q, k.transpose(-2, -1)) /  math.sqrt(d_k)
+    scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(d_k)
     
     if mask is not None:
         mask = mask.unsqueeze(1)
