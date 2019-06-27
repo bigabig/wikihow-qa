@@ -79,6 +79,10 @@ class TextDataset(Dataset):
             mask_target = mask_target.cuda()
             nopeak_mask = nopeak_mask.cuda()
 
+        # TODO return dict
+        result = {
+            ids_source: ids_source,
+        }
         return ids_source, segment_ids_source, mask_source, ids_target, segment_ids_target, mask_target, nopeak_mask
 
     def __len__(self):

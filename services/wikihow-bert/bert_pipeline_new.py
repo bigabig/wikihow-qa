@@ -83,7 +83,13 @@ def train_model(selected_mode, dataloaders_dict, dataset_sizes, tokenizer, model
         # TODO: STEP IS PROBLEMATIC!!!
         # Wie kann ich beim Dataloader sicherstellen, dass wenn ich mitten im training aufhöre, er auch da weiter macht wo zuende war (also ohne beispiele doppelt zu sehen!)
         # TODO: IST DIE NO PEAK MASK RICHTIG? WIE RAUSFINDEN?
-        for ids_source, segment_ids_source, mask_source, ids_target, segment_ids_target, mask_target, nopeak_mask in dataloaders_dict[mode]:
+        # WIE BATCH SIZE? bei dataloader?
+        for batch_data in dataloaders_dict[mode]:
+            # ids_source, segment_ids_source, mask_source, ids_target, segment_ids_target, mask_target, nopeak_mask
+            ids_source = batch_data['ids_source']
+            # first dim is batch length
+
+
             step = step + 1
 
             # let the model predict
@@ -134,7 +140,6 @@ def train_model(selected_mode, dataloaders_dict, dataset_sizes, tokenizer, model
                 break
 
             # TODO: In VAL phase check how good model performs and save it as best model!
-
             # END OF ONE BATCH
 
         # END OF EPOCH
@@ -161,6 +166,7 @@ def save_model(model, optimizer, epoch, mode, total_loss):
     }, PATH)
 
 
+# TODO: INITIALISIERUNG DES MODELS?! get clones vllt falsch?
 def main():
     # Activate Logging
     logging.basicConfig(level=logging.INFO)

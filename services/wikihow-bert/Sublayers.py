@@ -7,7 +7,6 @@ import math
 class Norm(nn.Module):
     def __init__(self, d_model, eps = 1e-6):
         super().__init__()
-    
         self.size = d_model
         
         # create two learnable parameters to calibrate normalisation
