@@ -9,6 +9,10 @@ def main():
 	parser.add_argument("-i", "--index", dest="index", help="elasticsearch index", metavar="INDEX")	
 	args = parser.parse_args()
 
+	if not args.data or not args.index:
+		parser.print_help()
+		return
+
 	es = Elasticsearch(['localhost'], port=9200)
 
 	id = 0
