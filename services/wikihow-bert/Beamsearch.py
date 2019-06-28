@@ -18,29 +18,40 @@ def init_vars(src_ids, src_token_type_ids, src_mask, model, k, max_len, true_tar
     # create segment ids
     target_segment_ids = [0] * len(target_ids)
 
+    # target mask wird hier anders erstellt...
+    # normalerweise hat nopeak mask nur so viele 1'n wie target lang ist, aber das wäre ja schummeln!
+    target_nopeak_mask2 = create_nopeak_mask(512)
+    target_nopeak_mask = []
+    for i in range(0, 512):
+        temp = []
+        for j in range(0, 512):
+            if j <= i and j < len(target_ids):
+                temp.append(1)
+            else:
+                temp.append(0)
+        target_nopeak_mask.append(temp)
+
     # pad everything up to sequenze length
     padding = [0] * (512 - len(target_ids))
     target_ids += padding
     target_mask += padding
     target_segment_ids += padding
 
-    # target mask wird hier anders erstellt...
-    # normalerweise hat nopeak mask nur so viele 1'n wie target lang ist, aber das wäre ja schummeln!
-    target_nopeak_mask = create_nopeak_mask(512)
-
     # convert to tensors
     target_ids = torch.tensor([target_ids])
     target_mask = torch.tensor([target_mask])
     target_segment_ids = torch.tensor([target_segment_ids])
     target_nopeak_mask = torch.tensor([target_nopeak_mask])
+    target_nopeak_mask2 = torch.tensor([target_nopeak_mask2])
     if torch.cuda.is_available():
         target_ids = target_ids.cuda()
         target_mask = target_mask.cuda()
         target_segment_ids = target_segment_ids.cuda()
         target_nopeak_mask = target_nopeak_mask.cuda()
+        target_nopeak_mask2 = target_nopeak_mask2.cuda()
 
     # predict with limited information (just the CLS token / sentence start token)
-    out = model.out(model.decoder(true_target_ids, target_segment_ids, target_mask, target_nopeak_mask, e_output, src_mask))
+    out = model.out(model.decoder(target_ids, target_segment_ids, target_mask, target_nopeak_mask, e_output, src_mask))
     out = F.softmax(out, dim=-1)
 
     # TODO WARUM -1? das ist doch das letzte ergebnis, ich bin doch am ersten (0) interessiert!

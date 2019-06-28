@@ -1,0 +1,5 @@
+/app/models/*
+/app/src/__pycache__/
+/app/src/models/__pycache__/
+/app/src/others/__pycache__/
+/app/src/prepro/__pycache__/

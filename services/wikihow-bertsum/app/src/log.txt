@@ -1,0 +1,55 @@
+[2019-06-27 22:07:38,033 INFO] Loading checkpoint from ..\models\model_step_1.pt
+[2019-06-27 22:10:03,774 INFO] Loading checkpoint from ..\models\model_step_1.pt
+[2019-06-27 22:10:33,081 INFO] Loading checkpoint from ..\models\model_step_1.pt
+[2019-06-27 22:14:06,705 INFO] Loading checkpoint from ..\models\model_step_1.pt
+[2019-06-27 22:16:48,698 INFO] Loading checkpoint from ..\models\model_step_1.pt
+[2019-06-27 22:20:56,171 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 22:21:20,152 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 22:21:59,060 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:15:58,730 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:16:02,655 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.0.bert.pt, number of examples: 2001
+[2019-06-27 23:16:02,659 INFO] * number of parameters: 109483009
+[2019-06-27 23:16:43,588 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.1.bert.pt, number of examples: 2001
+[2019-06-27 23:17:24,880 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.2.bert.pt, number of examples: 2001
+[2019-06-27 23:18:05,569 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.3.bert.pt, number of examples: 2000
+[2019-06-27 23:18:46,746 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.4.bert.pt, number of examples: 2001
+[2019-06-27 23:19:27,428 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.5.bert.pt, number of examples: 2001
+[2019-06-27 23:20:07,891 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.6.bert.pt, number of examples: 1362
+[2019-06-27 23:20:35,095 INFO] Validation xent: 5.40717 at step 1
+[2019-06-27 23:20:35,193 INFO] PPL [(5.407171492962934, '../models\\model_step_1.pt')]
+[2019-06-27 23:20:35,194 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:20:36,901 INFO] Loading test dataset from ../bert_data/cnndm\cnndm.test.0.bert.pt, number of examples: 2001
+[2019-06-27 23:20:36,902 INFO] * number of parameters: 109483009
+[2019-06-27 23:26:42,104 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:26:45,862 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.0.bert.pt, number of examples: 2001
+[2019-06-27 23:26:45,865 INFO] * number of parameters: 109483009
+[2019-06-27 23:27:26,632 INFO] Validation xent: 5.41815 at step 1
+[2019-06-27 23:27:26,735 INFO] PPL [(5.418146349798733, '../models\\model_step_1.pt')]
+[2019-06-27 23:27:26,736 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:27:28,476 INFO] Loading test dataset from ../bert_data/cnndm\cnndm.test.0.bert.pt, number of examples: 2001
+[2019-06-27 23:27:28,479 INFO] * number of parameters: 109483009
+[2019-06-27 23:30:05,703 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:30:09,478 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.0.bert.pt, number of examples: 2001
+[2019-06-27 23:30:09,481 INFO] * number of parameters: 109483009
+[2019-06-27 23:30:50,560 INFO] Validation xent: 5.41815 at step 1
+[2019-06-27 23:30:50,657 INFO] PPL [(5.418146349798733, '../models\\model_step_1.pt')]
+[2019-06-27 23:30:50,657 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:30:52,481 INFO] Loading test dataset from ../bert_data/cnndm\cnndm.test.0.bert.pt, number of examples: 2001
+[2019-06-27 23:30:52,486 INFO] * number of parameters: 109483009
+[2019-06-27 23:32:52,900 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:32:56,815 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.0.bert.pt, number of examples: 2001
+[2019-06-27 23:32:56,819 INFO] * number of parameters: 109483009
+[2019-06-27 23:33:37,989 INFO] Validation xent: 5.41815 at step 1
+[2019-06-27 23:33:38,096 INFO] PPL [(5.418146349798733, '../models\\model_step_1.pt')]
+[2019-06-27 23:33:38,096 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:33:39,895 INFO] Loading test dataset from ../bert_data/cnndm\cnndm.test.0.bert.pt, number of examples: 2001
+[2019-06-27 23:33:39,899 INFO] * number of parameters: 109483009
+[2019-06-27 23:40:18,209 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:40:22,237 INFO] Loading valid dataset from ../bert_data/cnndm\cnndm.valid.0.bert.pt, number of examples: 2001
+[2019-06-27 23:40:22,239 INFO] * number of parameters: 109483009
+[2019-06-27 23:41:03,105 INFO] Validation xent: 5.41815 at step 1
+[2019-06-27 23:41:03,202 INFO] PPL [(5.418146349798733, '../models\\model_step_1.pt')]
+[2019-06-27 23:41:03,202 INFO] Loading checkpoint from ../models\model_step_1.pt
+[2019-06-27 23:41:05,028 INFO] Loading test dataset from ../bert_data/cnndm\cnndm.test.0.bert.pt, number of examples: 2001
+[2019-06-27 23:41:05,030 INFO] * number of parameters: 109483009
+[2019-06-27 23:41:45,418 INFO] Validation xent: 5.33871 at step 1
