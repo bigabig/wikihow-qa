@@ -32,6 +32,7 @@ public class RestService {
 
             // extract results from response
             if (response.getStatusLine().getStatusCode() == 200) {
+
                 return IOUtils.toString(response.getEntity().getContent(), "UTF-8");
             }
         } catch (IOException e) {

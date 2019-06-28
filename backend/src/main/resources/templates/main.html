@@ -80,6 +80,40 @@
                 </div>
             </div>
         </div>
+        <div class="w3-row" style="margin-top: 16px;">
+            <div class="w3-col m12">
+                <div class="w3-card w3-round w3-white">
+                    <div class="w3-container w3-padding">
+                        <h4>BertSum Summary</h4>
+                        <p th:text="${wikihowbertsum}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w3-row" style="margin-top: 16px;">
+            <div class="w3-col m12">
+                <div class="w3-card w3-round w3-white">
+                    <div class="w3-container w3-padding">
+                        <h4>Keywords</h4>
+                        <ul>
+                            <li th:each="keyword : ${wikihowkeywords}" th:text="${keyword.word}"></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w3-row" style="margin-top: 16px;">
+            <div class="w3-col m12">
+                <div class="w3-card w3-round w3-white">
+                    <div class="w3-container w3-padding">
+                        <h4>Entities</h4>
+                        <ul>
+                            <li th:each="entity : ${wikihowentities}" th:text="${entity.text} + '-->' + ${entity.label}"></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

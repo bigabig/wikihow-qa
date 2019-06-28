@@ -1,3 +1,7 @@
+# docker build -t bigabig/wikihow-bertsum:latest .
+# docker run -p5000:5000 bigabig/wikihow-bertsum:latest
+# visit http://localhost:5000/ 
+
 ### 1. Get Linux
 FROM ubuntu:18.04
 
