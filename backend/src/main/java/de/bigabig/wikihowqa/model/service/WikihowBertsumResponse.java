@@ -1,4 +1,4 @@
-package de.bigabig.wikihowqa.model;
+package de.bigabig.wikihowqa.model.service;
 
 public class WikihowBertsumResponse {
 

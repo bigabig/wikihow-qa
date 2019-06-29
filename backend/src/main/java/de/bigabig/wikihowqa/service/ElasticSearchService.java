@@ -1,7 +1,7 @@
 package de.bigabig.wikihowqa.service;
 
 import com.google.gson.Gson;
-import de.bigabig.wikihowqa.model.WikihowArticle;
+import de.bigabig.wikihowqa.model.service.WikihowArticle;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.search.ClearScrollRequest;
 import org.elasticsearch.action.search.SearchRequest;
@@ -46,6 +46,10 @@ public class ElasticSearchService {
     }
 
     public List<WikihowArticle> findDocumentsForTopic(String topic, int count) {
+        return findDocumentsForTopic(topic, count, elasticindex);
+    }
+
+    public List<WikihowArticle> findDocumentsForTopic(String topic, int count, String elasticindex) {
         List<WikihowArticle> result = new ArrayList<>();
         final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(1L));
 

@@ -1,4 +1,4 @@
-package de.bigabig.wikihowqa.model;
+package de.bigabig.wikihowqa.model.service;
 
 import com.google.gson.annotations.SerializedName;
 
