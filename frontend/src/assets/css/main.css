@@ -1,0 +1,106 @@
+.KEYWORD {
+    color: black;
+    background: yellow;
+    border: 1px black;
+    padding: .2em .3em;
+    margin: 0 .25em;
+    line-height: 1;
+    display: inline-block;
+    border-radius: .25em;
+}
+
+.NER {
+    border: 1px black;
+    padding: .2em .3em;
+    margin: 0 .25em;
+    line-height: 1;
+    display: inline-block;
+    border-radius: .25em;
+}
+
+.NER-LABEL {
+    display:none;
+}
+
+.NER .NER-LABEL {
+    display:initial;
+}
+
+.NER.PERSON {
+    color: white;
+    background: orange;
+}
+
+.NER.LOC {
+    color: white;
+    background: blue;
+}
+
+.NER.ORG {
+    color: white;
+    background: green;
+}
+
+.NER.MISC {
+    color: white;
+    background: red;
+}
+
+.NER.DATE {
+    color: black;
+    background: pink;
+}
+
+.NER.TIME {
+    color: black;
+    background: pink;
+}
+
+.NER.CARDINAL {
+    color: white;
+    background: purple;
+}
+
+.NER.ORDINAL {
+    color: white;
+    background: hotpink;
+}
+
+.NER.LAW {
+    color: white;
+    background: blue;
+}
+
+.NER.MONEY {
+    color: black;
+    background: greenyellow;
+}
+
+.NER.PRODUCT {
+    color: black;
+    background: greenyellow;
+}
+
+.NER.GPE {
+    color: black;
+    background: greenyellow;
+}
+
+.NER.EVENT {
+    color: black;
+    background: greenyellow;
+}
+
+.NER.NORP {
+    color: black;
+    background: greenyellow;
+}
+
+.NER.FAC {
+    color: black;
+    background: greenyellow;
+}
+
+.checked {
+    color: orange;
+}

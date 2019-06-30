@@ -1,18 +1,18 @@
 package de.bigabig.wikihowqa.controller;
 
 import com.google.gson.Gson;
-import de.bigabig.wikihowqa.model.rest.ElasticArticleRequest;
-import de.bigabig.wikihowqa.model.rest.ElasticArticleResponse;
-import de.bigabig.wikihowqa.model.rest.SummarizationRequest;
-import de.bigabig.wikihowqa.model.rest.SummarizationResponse;
+import de.bigabig.wikihowqa.dao.RatingDao;
+import de.bigabig.wikihowqa.model.Rating;
+import de.bigabig.wikihowqa.model.rest.*;
 import de.bigabig.wikihowqa.model.service.*;
 import de.bigabig.wikihowqa.service.ElasticSearchService;
 import de.bigabig.wikihowqa.service.RestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
 
 @RestController
 public class APIController {
@@ -23,8 +23,12 @@ public class APIController {
     @Autowired
     ElasticSearchService elasticSearch;
 
+    @Autowired
+    RatingDao ratingDao;
+
     private Gson gson = new Gson();
 
+    @CrossOrigin
     @PostMapping("/summarize")
     public ResponseEntity<SummarizationResponse> summarize(@RequestBody SummarizationRequest request) {
         switch (request.getMethod()) {
@@ -55,9 +59,10 @@ public class APIController {
             default:
                 return ResponseEntity.badRequest().body(new SummarizationResponse("Please use 'textrank', 'network' or 'bertsum' as method :)"));
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new SummarizationResponse());
     }
 
+    @CrossOrigin
     @PostMapping("/keywords")
     public ResponseEntity<WikihowKeywordResponse> keywords(@RequestBody WikihowKeywordsRequest request) {
         WikihowKeywordResponse keywordResponse = gson.fromJson(restService.sendPostRequest("http://localhost:8090/extractKeywords", gson.toJson(request)), WikihowKeywordResponse.class);
@@ -66,9 +71,10 @@ public class APIController {
             return ResponseEntity.ok(keywordResponse);
         }
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new WikihowKeywordResponse());
     }
 
+    @CrossOrigin
     @PostMapping("/ner")
     public ResponseEntity<WikihowNERResponse> ner(@RequestBody WikihowNERRequest request) {
         WikihowNERResponse nerResponse = gson.fromJson(restService.sendPostRequest("http://localhost:5003/ner", gson.toJson(request)), WikihowNERResponse.class);
@@ -77,9 +83,10 @@ public class APIController {
             return ResponseEntity.ok(nerResponse);
         }
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new WikihowNERResponse());
     }
 
+    @CrossOrigin
     @PostMapping("/articles")
     public ResponseEntity<ElasticArticleResponse> articles(@RequestBody ElasticArticleRequest request) {
         if(request.getCount() <= 0 ) {
@@ -91,6 +98,27 @@ public class APIController {
             return ResponseEntity.ok(response);
         }
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ElasticArticleResponse());
+    }
+
+    @CrossOrigin
+    @PostMapping("/rate")
+    public ResponseEntity<MessageResponse> rate(@RequestBody Rating rating) {
+        rating.setTimestamp(new Date());
+        ratingDao.save(rating);
+        return ResponseEntity.ok(new MessageResponse("Rating added!"));
+    }
+
+    @CrossOrigin
+    @GetMapping("/ratings")
+    public ResponseEntity getRatings(@RequestParam String method) {
+        List<Rating> ratings = ratingDao.findAllByMethod(method);
+        int[] result = new int[5];
+        for(Rating rating : ratings) {
+            if(rating.getRating() > 0 && rating.getRating() <= 5) {
+                result[rating.getRating()-1]++;
+            }
+        }
+        return ResponseEntity.ok(result);
     }
 }
