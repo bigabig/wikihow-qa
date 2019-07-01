@@ -2,6 +2,8 @@ package de.bigabig.wikihowqa.controller;
 
 import com.google.gson.Gson;
 import de.bigabig.wikihowqa.dao.RatingDao;
+import de.bigabig.wikihowqa.dao.SummaryDao;
+import de.bigabig.wikihowqa.model.BetterSummary;
 import de.bigabig.wikihowqa.model.Rating;
 import de.bigabig.wikihowqa.model.rest.*;
 import de.bigabig.wikihowqa.model.service.*;
@@ -25,6 +27,9 @@ public class APIController {
 
     @Autowired
     RatingDao ratingDao;
+
+    @Autowired
+    SummaryDao summaryDao;
 
     private Gson gson = new Gson();
 
@@ -120,5 +125,20 @@ public class APIController {
             }
         }
         return ResponseEntity.ok(result);
+    }
+
+    @CrossOrigin
+    @PostMapping("/sum")
+    public ResponseEntity<MessageResponse> sum(@RequestBody BetterSummary summary) {
+        summary.setTimestamp(new Date());
+        summaryDao.save(summary);
+        return ResponseEntity.ok(new MessageResponse("Summary added!"));
+    }
+
+    @CrossOrigin
+    @GetMapping("/summaries")
+    public ResponseEntity getSummaries(@RequestParam String method) {
+        List<BetterSummary> summaries = summaryDao.findAllByMethod(method);
+        return ResponseEntity.ok(summaries);
     }
 }
