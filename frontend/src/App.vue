@@ -1,5 +1,16 @@
 <template>
   <div id="app">
+
+    <div id="error-popup" :class="{'wikihow-no-display': errorMessage === 'string'}" class="wikihow-popup-anim wikihow-popup w3-panel w3-red w3-card-4 w3-content">
+      <h3>Error :(</h3>
+      <p>{{errorMessage}}</p>
+    </div>
+
+    <div id="success-popup" :class="{'wikihow-no-display': successMessage === 'string'}" class="wikihow-popup-anim wikihow-popup w3-panel w3-green w3-card-4 w3-content">
+      <h3>Success :)</h3>
+      <p>{{successMessage}}</p>
+    </div>
+
     <div class="w3-theme-l5">
       <!-- Navbar -->
       <div class="w3-top">
@@ -69,9 +80,9 @@
                 <button v-on:click="showBetterSummary = !showBetterSummary" type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i> Summary not good? Provide a better one!</button>
                 <div v-if="showBetterSummary" class="w3-container w3-card w3-theme-l4 w3-margin-bottom" style="margin-top:-16px">
                   <h4>Write a better summary</h4>
-                  <p><textarea v-model="betterSummary" class="w3-border w3-padding" rows="5" style="width:100%"></textarea></p>
-                  <p>{{betterSummaryLength}} / {{maxLength}}</p>
-                  <button v-on:click="submitSummary" type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-check"></i> Submit</button>
+                  <p><textarea v-model="betterSummary" :readonly="!summaryAllowed[currentMethod[currentPage][evalMode]]" v-bind:class="{ 'w3-opacity': !summaryAllowed[currentMethod[currentPage][evalMode]] }" class="w3-border w3-padding" rows="5" style="width:100%"></textarea></p>
+                  <p v-bind:class="{ 'wikihow-danger': betterSummaryLength > maxLength }">{{betterSummaryLength}} / {{maxLength}}</p>
+                  <button v-on:click="submitSummary" :disabled="betterSummaryLength > maxLength || !summaryAllowed[currentMethod[currentPage][evalMode]]" type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-check"></i> Submit</button>
                 </div>
               </div>
 
@@ -166,13 +177,14 @@
                     <ul>
                       <li v-for="sentence in summaries[currentPage][evalMode][summarizationMethod]" v-html="sentence"></li>
                     </ul>
-                    <p style="font-size:18px; margin-bottom: 0;">
+                    <hr class="w3-clear">
+                    <p style="font-size:18px; margin-bottom: 8px;">
                       <span class="w3-opacity">Submit a rating: </span>
-                      <span v-on:click="rateMethod(summarizationMethod, 1)" @mouseover="hover[summarizationMethod]=ratingAllowed[summarizationMethod]?1:hover[summarizationMethod]" @mouseleave="hover[summarizationMethod]=ratingAllowed[summarizationMethod]?0:hover[summarizationMethod]" :class="{ checked: hover[summarizationMethod] >= 1 }" class="fa fa-star"></span>
-                      <span v-on:click="rateMethod(summarizationMethod, 2)" @mouseover="hover[summarizationMethod]=ratingAllowed[summarizationMethod]?2:hover[summarizationMethod]" @mouseleave="hover[summarizationMethod]=ratingAllowed[summarizationMethod]?0:hover[summarizationMethod]" :class="{ checked: hover[summarizationMethod] >= 2 }" class="fa fa-star"></span>
-                      <span v-on:click="rateMethod(summarizationMethod, 3)" @mouseover="hover[summarizationMethod]=ratingAllowed[summarizationMethod]?3:hover[summarizationMethod]" @mouseleave="hover[summarizationMethod]=ratingAllowed[summarizationMethod]?0:hover[summarizationMethod]" :class="{ checked: hover[summarizationMethod] >= 3 }" class="fa fa-star"></span>
-                      <span v-on:click="rateMethod(summarizationMethod, 4)" @mouseover="hover[summarizationMethod]=ratingAllowed[summarizationMethod]?4:hover[summarizationMethod]" @mouseleave="hover[summarizationMethod]=ratingAllowed[summarizationMethod]?0:hover[summarizationMethod]" :class="{ checked: hover[summarizationMethod] >= 4 }" class="fa fa-star"></span>
-                      <span v-on:click="rateMethod(summarizationMethod, 5)" @mouseover="hover[summarizationMethod]=ratingAllowed[summarizationMethod]?5:hover[summarizationMethod]" @mouseleave="hover[summarizationMethod]=ratingAllowed[summarizationMethod]?0:hover[summarizationMethod]" :class="{ checked: hover[summarizationMethod] >= 5 }" class="fa fa-star"></span>
+                      <span v-on:click="rateMethod(currentPage, evalMode, summarizationMethod, 1)" @mouseover="hover[currentPage][evalMode][summarizationMethod]=ratingAllowed[currentPage][evalMode][summarizationMethod]?1:hover[currentPage][evalMode][summarizationMethod]" @mouseleave="hover[currentPage][evalMode][summarizationMethod]=ratingAllowed[currentPage][evalMode][summarizationMethod]?0:hover[currentPage][evalMode][summarizationMethod]" :class="{ checked: hover[currentPage][evalMode][summarizationMethod] >= 1 }" class="fa fa-star"></span>
+                      <span v-on:click="rateMethod(currentPage, evalMode, summarizationMethod, 2)" @mouseover="hover[currentPage][evalMode][summarizationMethod]=ratingAllowed[currentPage][evalMode][summarizationMethod]?2:hover[currentPage][evalMode][summarizationMethod]" @mouseleave="hover[currentPage][evalMode][summarizationMethod]=ratingAllowed[currentPage][evalMode][summarizationMethod]?0:hover[currentPage][evalMode][summarizationMethod]" :class="{ checked: hover[currentPage][evalMode][summarizationMethod] >= 2 }" class="fa fa-star"></span>
+                      <span v-on:click="rateMethod(currentPage, evalMode, summarizationMethod, 3)" @mouseover="hover[currentPage][evalMode][summarizationMethod]=ratingAllowed[currentPage][evalMode][summarizationMethod]?3:hover[currentPage][evalMode][summarizationMethod]" @mouseleave="hover[currentPage][evalMode][summarizationMethod]=ratingAllowed[currentPage][evalMode][summarizationMethod]?0:hover[currentPage][evalMode][summarizationMethod]" :class="{ checked: hover[currentPage][evalMode][summarizationMethod] >= 3 }" class="fa fa-star"></span>
+                      <span v-on:click="rateMethod(currentPage, evalMode, summarizationMethod, 4)" @mouseover="hover[currentPage][evalMode][summarizationMethod]=ratingAllowed[currentPage][evalMode][summarizationMethod]?4:hover[currentPage][evalMode][summarizationMethod]" @mouseleave="hover[currentPage][evalMode][summarizationMethod]=ratingAllowed[currentPage][evalMode][summarizationMethod]?0:hover[currentPage][evalMode][summarizationMethod]" :class="{ checked: hover[currentPage][evalMode][summarizationMethod] >= 4 }" class="fa fa-star"></span>
+                      <span v-on:click="rateMethod(currentPage, evalMode, summarizationMethod, 5)" @mouseover="hover[currentPage][evalMode][summarizationMethod]=ratingAllowed[currentPage][evalMode][summarizationMethod]?5:hover[currentPage][evalMode][summarizationMethod]" @mouseleave="hover[currentPage][evalMode][summarizationMethod]=ratingAllowed[currentPage][evalMode][summarizationMethod]?0:hover[currentPage][evalMode][summarizationMethod]" :class="{ checked: hover[currentPage][evalMode][summarizationMethod] >= 5 }" class="fa fa-star"></span>
                     </p>
                   </div>
                 </div>
@@ -187,13 +199,14 @@
                     <ul>
                       <li v-for="sentence in summaries[currentPage][evalMode][currentMethod[currentPage][evalMode]]" v-html="sentence"></li>
                     </ul>
-                    <p style="font-size:18px; margin-bottom: 0;">
+                    <hr class="w3-clear">
+                    <p style="font-size:18px; margin-bottom: 8px;">
                       <span class="w3-opacity">Submit a rating: </span>
-                      <span v-on:click="rateMethod(currentMethod[currentPage][evalMode], 1)" @mouseover="hover[currentMethod[currentPage][evalMode]]=ratingAllowed[currentMethod[currentPage][evalMode]]?1:hover[currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentMethod[currentPage][evalMode]]=ratingAllowed[currentMethod[currentPage][evalMode]]?0:hover[currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentMethod[currentPage][evalMode]] >= 1 }" class="fa fa-star"></span>
-                      <span v-on:click="rateMethod(currentMethod[currentPage][evalMode], 2)" @mouseover="hover[currentMethod[currentPage][evalMode]]=ratingAllowed[currentMethod[currentPage][evalMode]]?2:hover[currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentMethod[currentPage][evalMode]]=ratingAllowed[currentMethod[currentPage][evalMode]]?0:hover[currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentMethod[currentPage][evalMode]] >= 2 }" class="fa fa-star"></span>
-                      <span v-on:click="rateMethod(currentMethod[currentPage][evalMode], 3)" @mouseover="hover[currentMethod[currentPage][evalMode]]=ratingAllowed[currentMethod[currentPage][evalMode]]?3:hover[currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentMethod[currentPage][evalMode]]=ratingAllowed[currentMethod[currentPage][evalMode]]?0:hover[currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentMethod[currentPage][evalMode]] >= 3 }" class="fa fa-star"></span>
-                      <span v-on:click="rateMethod(currentMethod[currentPage][evalMode], 4)" @mouseover="hover[currentMethod[currentPage][evalMode]]=ratingAllowed[currentMethod[currentPage][evalMode]]?4:hover[currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentMethod[currentPage][evalMode]]=ratingAllowed[currentMethod[currentPage][evalMode]]?0:hover[currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentMethod[currentPage][evalMode]] >= 4 }" class="fa fa-star"></span>
-                      <span v-on:click="rateMethod(currentMethod[currentPage][evalMode], 5)" @mouseover="hover[currentMethod[currentPage][evalMode]]=ratingAllowed[currentMethod[currentPage][evalMode]]?5:hover[currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentMethod[currentPage][evalMode]]=ratingAllowed[currentMethod[currentPage][evalMode]]?0:hover[currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentMethod[currentPage][evalMode]] >= 5 }" class="fa fa-star"></span>
+                      <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 1)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?1:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 1 }" class="fa fa-star"></span>
+                      <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 2)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?2:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 2 }" class="fa fa-star"></span>
+                      <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 3)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?3:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 3 }" class="fa fa-star"></span>
+                      <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 4)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?4:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 4 }" class="fa fa-star"></span>
+                      <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 5)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?5:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 5 }" class="fa fa-star"></span>
                     </p>
                   </div>
                 </div>
@@ -231,8 +244,20 @@
                 <div class="w3-card w3-round w3-white">
                   <div class="w3-container w3-padding">
                     <h4 class="w3-opacity">Evaluation of Method "{{summarizationMethod}}"</h4>
-                    <line-chart :chart-data="chartData[summarizationMethod]" :options="chartOptions"></line-chart>
-                    <button @click="fillData(summarizationMethod)">Refresh</button>
+                    <div class="w3-row">
+                      <div class="w3-col w3-padding m5">
+                        <bar-chart :chart-data="barChartData[summarizationMethod]" :options="barChartOptions"></bar-chart>
+                      </div>
+                      <div class="w3-col w3-padding m5">
+                        <line-chart :chart-data="lineChartData[summarizationMethod]" :options="lineChartOptions"></line-chart>
+                      </div>
+                      <div class="w3-col w3-padding m2">
+                        <h6 class="w3-opacity">Statistics</h6>
+                        <p># Votes: {{votes[summarizationMethod]}}</p>
+                        <p>Avg. Rating: {{avgRating[summarizationMethod]}}</p>
+                      </div>
+                    </div>
+                    <button @click="updateCharts(summarizationMethod)">Refresh</button>
                   </div>
                 </div>
               </div>
@@ -261,6 +286,7 @@
 </template>
 
 <script>
+import BarChart from './components/BarChart';
 import LineChart from './components/LineChart';
 
 require('@/assets/css/main.css');
@@ -268,6 +294,7 @@ require('@/assets/css/main.css');
 export default {
   name: 'app',
   components: {
+    BarChart,
     LineChart,
   },
   data: function () {
@@ -385,26 +412,74 @@ export default {
       checkedEntities: [
         "PERSON"
       ],
-      hover: {
+      hover: [[{
+        "gold": 0,
+        "textrank": 0,
+        "network": 0,
+        "bertsum": 0,
+      },{
+        "gold": 0,
+        "textrank": 0,
+        "network": 0,
+        "bertsum": 0,
+      }],[{
+        "gold": 0,
+        "textrank": 0,
+        "network": 0,
+        "bertsum": 0,
+      },{
+        "gold": 0,
+        "textrank": 0,
+        "network": 0,
+        "bertsum": 0,
+      }]],
+      ratingAllowed: [[{
+        "gold": true,
+        "textrank": true,
+        "network": true,
+        "bertsum": true,
+      },{
+        "gold": true,
+        "textrank": true,
+        "network": true,
+        "bertsum": true,
+      }],[{
+        "gold": true,
+        "textrank": true,
+        "network": true,
+        "bertsum": true,
+      },{
+        "gold": true,
+        "textrank": true,
+        "network": true,
+        "bertsum": true,
+      }]],
+      votes: {
         "gold": 0,
         "textrank": 0,
         "network": 0,
         "bertsum": 0,
       },
-      ratingAllowed: {
-        "gold": true,
-        "textrank": true,
-        "network": true,
-        "bertsum": true,
+      avgRating: {
+        "gold": 0,
+        "textrank": 0,
+        "network": 0,
+        "bertsum": 0,
       },
-      chartData: {
+      barChartData: {
         "gold": null,
         "textrank": null,
         "network": null,
         "bertsum": null,
       },
-      chartOptions: {
-        responsive: false,
+      lineChartData: {
+        "gold": null,
+        "textrank": null,
+        "network": null,
+        "bertsum": null,
+      },
+      barChartOptions: {
+        responsive: true,
         scales: {
           xAxes: [{
             ticks: {
@@ -413,6 +488,29 @@ export default {
             },
           }]
         }
+      },
+      lineChartOptions: {
+        responsive: true,
+        scales: {
+          xAxes: [{
+            type: 'time',
+            distribution: 'linear',
+            time: {
+              unit: 'day'
+            }
+          }],
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              stepSize: 1,
+            },
+          }]
+        },
+        // elements: {
+        //   line: {
+        //     tension: 0 // disables bezier curves
+        //   }
+        // }
       },
       summaryAllowed: {
         "gold": true,
@@ -423,31 +521,21 @@ export default {
       betterSummary: "",
       showBetterSummary: false,
       maxLength: 512,
+      successMessage: "string",
+      errorMessage: "string",
     }
   },
   computed: {
-    // a computed getter
     betterSummaryLength: function () {
       return this.betterSummary.length
     }
   },
   watch: {
     currentPage: function (val) {
-      console.log("Current Page changed! Page is " + val);
-
       // when page changes, update highlighted entities!
       setTimeout(() => {this.updateHighlights();}, 1);
 
-      // // when page changes and method is all, change method to textrank
-      // if(val === 0 && this.method === "all") {
-      //   this.method = 'textrank';
-      // }
-      //
-      // // when page changes and method is all, change method to textrank
-      // if(val === 0 && this.currentMethod === "all") {
-      //   this.currentMethod = 'textrank';
-      // }
-
+      // when navigating to evaluation, update charts
       if(val === 2) {
         for(let method of this.allMethods) {
           this.updateCharts(method);
@@ -455,29 +543,51 @@ export default {
       }
     },
     evalMode: function (val) {
-      console.log("Eval Mode changed! Mode is " + val);
-
       // when eval mode changes, update highlighted entities!
       setTimeout(() => {this.updateHighlights();}, 1);
-
-      // when eval mode changes to text, and method is gold switch to textrank
-      // if(val === 1 && this.method === "gold") {
-      //   this.method = 'textrank';
-      // }
-      // if(val === 1 && this.currentMethod === "gold") {
-      //   this.currentMethod = 'textrank';
-      // }
     }
   },
   methods: {
+    showSuccessMessage: function(message) {
+      this.successMessage = message;
+
+      let successPopup = document.getElementById('success-popup');
+      successPopup.classList.remove('wikihow-popup-anim');
+      setTimeout(() => {
+        successPopup.classList.add('wikihow-popup-anim');
+      }, 5);
+    },
+    showErrorMessage: async function(message) {
+      this.errorMessage = message;
+
+      let errorPopup = document.getElementById('error-popup');
+      errorPopup.classList.remove('wikihow-popup-anim');
+      setTimeout(() => {
+        errorPopup.classList.add('wikihow-popup-anim');
+      }, 5);
+    },
     resetVars: function(page, mode, methods) {
       for(let method of methods) {
         this.summaries[page][mode][method] = ["string"];
+        this.ratingAllowed[page][mode][method] = true;
+        this.hover[page][mode][method] = 0;
       }
       this.text[page][mode] = "string";
 
       this.summaries = this.summaries.slice(0);
       this.text = this.text.slice(0);
+      this.ratingAllowed = this.ratingAllowed.slice(0);
+      this.hover = this.hover.slice(0);
+
+      // user provided summary stuff
+      this.showBetterSummary = false;
+      this.summaryAllowed = {
+        "gold": true,
+        "textrank": true,
+        "network": true,
+        "bertsum": true,
+      };
+      this.betterSummary = "";
     },
     updateHighlights: function() {
       // loop through all entities
@@ -565,25 +675,36 @@ export default {
       }
     },
     fetchRatings: async function(method) {
-      console.log("Fetching Ratings for methd" + method);
+      console.log("Fetching Ratings for method" + method);
       let data = await getData('http://localhost:8080/wikihowqa/ratings?method='+method);
       return data;
     },
-    rateMethod: async function(method, rating) {
-      if(!this.ratingAllowed[method])
+    fetchRatingsOverTime: async function(method) {
+      console.log("Fetching Ratings over time for method" + method);
+      let data = await getData('http://localhost:8080/wikihowqa/ratingsOverTime?method='+method);
+      return data;
+    },
+    rateMethod: async function(page, mode, method, rating) {
+      if(!this.ratingAllowed[page][mode][method])
         return;
 
       console.log("Rating Method " + method + " with " + rating + " stars");
-      this.ratingAllowed[method] = false;
+      this.ratingAllowed[page][mode][method] = false;
       let message = await postData('http://localhost:8080/wikihowqa/rate', {
         "method": method,
         "rating": rating,
         "title": this.wikihowArticle.title
       });
       console.log(message);
+      this.showSuccessMessage("Thank you for this rating.");
     },
     submitSummary: async function() {
       let currentMethod = this.currentMethod[0][0];
+
+      if(this.betterSummary.length < 5) {
+        this.showErrorMessage("Your summary is way to short!");
+        return;
+      }
 
       if(!this.summaryAllowed[currentMethod])
         return;
@@ -599,6 +720,8 @@ export default {
         "title": this.wikihowArticle.title
       });
       console.log(message);
+      this.showBetterSummary = false;
+      this.showSuccessMessage("Thanks for contributing a new summary! Very appreciated.");
     },
     answerQuestion: async function() {
       this.currentMethod[0][0] = this.method[0][0];
@@ -754,27 +877,6 @@ export default {
       }
       this.summaries = this.summaries.slice(0);
     },
-    hasQuestionChanged() {
-      if(this.oldQuestion !== this.question) {
-        this.oldQuestion = this.question;
-        return true;
-      }
-      return false;
-    },
-    hasTextChanged() {
-      if(this.oldText !== this.text) {
-        this.oldText = this.text;
-        return true;
-      }
-      return false;
-    },
-    hasMethodChanged() {
-      if(this.oldMethod !== this.method) {
-        this.oldMethod = this.method;
-        return true;
-      }
-      return false;
-    },
     visualizeEntitiesAndKeywords: function(text, entities, keywords) {
       console.log("Visualizing Entities and Keywords");
       if(entities === undefined && keywords === undefined) {
@@ -860,7 +962,7 @@ export default {
       let ratings = await this.fetchRatings(method);
       console.log(ratings);
 
-      this.chartData[method] = {
+      this.barChartData[method] = {
         labels: ["1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"],
         datasets: [
           {
@@ -871,7 +973,29 @@ export default {
             borderWidth: 5,
           },
         ]
+      };
+
+      this.votes[method] = ratings.reduce((a, b) => a + b);
+
+      let totalRating = 0;
+      for(let i = 0; i < ratings.length; i++) {
+        totalRating += (i+1) * ratings[i];
       }
+      this.avgRating[method] = totalRating / this.votes[method];
+      this.avgRating[method] = this.avgRating[method].toFixed(2);
+
+      let ratingsOverTime = await this.fetchRatingsOverTime(method);
+      console.log(ratingsOverTime);
+      this.lineChartData[method] = {
+        labels: ratingsOverTime.labels,
+        datasets: [{
+          label: 'Demo',
+          data: ratingsOverTime.data,
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255,99,132,1)',
+          borderWidth: 1
+        }]
+      };
     },
   },
   created() {
@@ -931,7 +1055,4 @@ function openNav() {
   @import "https://fonts.googleapis.com/css?family=Open+Sans'";
   @import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css";
   html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
-  .wikihow-padding-top {
-    padding-top: 16px;
-  }
 </style>

@@ -1,5 +1,6 @@
 package de.bigabig.wikihowqa.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -25,6 +26,7 @@ public class Rating {
 
     @Column(name="timestamp",nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Berlin")
     private Date timestamp;
 
     public Rating() {

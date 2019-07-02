@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import de.bigabig.wikihowqa.dao.RatingDao;
 import de.bigabig.wikihowqa.dao.SummaryDao;
 import de.bigabig.wikihowqa.model.BetterSummary;
+import de.bigabig.wikihowqa.model.DatePoint;
 import de.bigabig.wikihowqa.model.Rating;
+import de.bigabig.wikihowqa.model.RatingsOverTimeResponse;
 import de.bigabig.wikihowqa.model.rest.*;
 import de.bigabig.wikihowqa.model.service.*;
 import de.bigabig.wikihowqa.service.ElasticSearchService;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -125,6 +128,19 @@ public class APIController {
             }
         }
         return ResponseEntity.ok(result);
+    }
+
+    @CrossOrigin
+    @GetMapping("/ratingsOverTime")
+    public ResponseEntity<RatingsOverTimeResponse> getRatingsOverTime(@RequestParam String method) {
+        List<Rating> ratings = ratingDao.findAllByMethod(method);
+        List<Date> labels = new ArrayList<Date>();
+        List<DatePoint> data = new ArrayList<DatePoint>();
+        for(Rating rating : ratings) {
+            labels.add(rating.getTimestamp());
+            data.add(new DatePoint(rating.getTimestamp(), rating.getRating()));
+        }
+        return ResponseEntity.ok(new RatingsOverTimeResponse(labels, data));
     }
 
     @CrossOrigin
