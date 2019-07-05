@@ -157,4 +157,10 @@ public class APIController {
         List<BetterSummary> summaries = summaryDao.findAllByMethod(method);
         return ResponseEntity.ok(summaries);
     }
+
+    @CrossOrigin
+    @GetMapping("/suggest")
+    public ResponseEntity suggest(@RequestParam String text, @RequestParam int count) {
+        return ResponseEntity.ok(elasticSearch.findSuggestions(text, count, "autohow"));
+    }
 }

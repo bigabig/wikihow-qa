@@ -14,6 +14,10 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.suggest.Suggest;
+import org.elasticsearch.search.suggest.SuggestBuilder;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -104,6 +108,51 @@ public class ElasticSearchService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        return result;
+    }
+
+    public List<String> findSuggestions(String text, int count, String elasticindex) {
+        logger.info("Query Autocomplete: " + text);
+        List<String> result = new ArrayList<>();
+
+        // Build Suggestion
+        CompletionSuggestionBuilder titleSuggest = new CompletionSuggestionBuilder("suggest_title");
+        titleSuggest.prefix(text);
+        titleSuggest.size(count);
+
+        // Build search
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+        searchSourceBuilder.suggest(new SuggestBuilder().addSuggestion("titleSuggester", titleSuggest));
+
+        // Build search request
+        SearchRequest searchRequest = new SearchRequest(elasticindex);
+        searchRequest.source(searchSourceBuilder);
+        searchSourceBuilder.explain(false);
+        searchSourceBuilder.fetchSource(false);
+
+        try {
+            // Search
+            SearchResponse response = client.search(searchRequest);
+
+            // Extract the result
+            CompletionSuggestion suggestions = response.getSuggest().getSuggestion("titleSuggester");
+
+            List<CompletionSuggestion.Entry> entryList = suggestions.getEntries();
+            if(entryList != null) {
+                for(CompletionSuggestion.Entry entry : entryList) {
+                    List<CompletionSuggestion.Entry.Option> options = entry.getOptions();
+                    if(options != null)  {
+                        for(CompletionSuggestion.Entry.Option option : options) {
+                            result.add(option.getText().string());
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return result;

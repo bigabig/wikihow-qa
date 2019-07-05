@@ -50,7 +50,8 @@
                   <div class="w3-container w3-padding">
                     <h6 v-if="evalMode === 0" class="w3-opacity">Type your question:</h6>
                     <h6 v-if="evalMode === 1" class="w3-opacity">Provide Text to summarize:</h6>
-                    <p v-if="evalMode === 0"><input v-model="input[currentPage][evalMode]" class="w3-border w3-padding" type="text" style="width:100%"></p>
+                    <p v-if="evalMode === 0"><autocomplete :suggestions="autocomplete"></autocomplete></p>
+<!--                    <input v-on:keydown="fetchAutocompletion()" v-model="input[currentPage][evalMode]" class="w3-border w3-padding" type="text" style="width:100%">-->
                     <p v-if="evalMode === 1"><textarea v-model="input[currentPage][evalMode]" class="w3-border w3-padding" rows="5" style="width:100%"></textarea></p>
                     <p><select v-model="method[currentPage][evalMode]" class="w3-select w3-border w3-padding w3-white" name="option">
                       <option v-if="evalMode === 0" value="gold">Cheating</option>
@@ -136,7 +137,7 @@
                   <div class="w3-container w3-padding">
                     <h6 v-if="evalMode === 0" class="w3-opacity">Type your question:</h6>
                     <h6 v-if="evalMode === 1" class="w3-opacity">Provide Text to summarize:</h6>
-                    <p v-if="evalMode === 0"><input v-model="input[currentPage][evalMode]" class="w3-border w3-padding" type="text" style="width:100%"></p>
+                    <p v-if="evalMode === 0"><autocomplete :suggestions="autocomplete"></autocomplete></p>
                     <p v-if="evalMode === 1"><textarea v-model="input[currentPage][evalMode]" id="textarea-eval" class="w3-border w3-padding" rows="5" style="width:100%"></textarea></p>
                     <p><select v-model="method[currentPage][evalMode]" class="w3-select w3-border w3-padding w3-white" name="option">
                       <option value="all" selected>All Methods</option>
@@ -288,6 +289,7 @@
 <script>
 import BarChart from './components/BarChart';
 import LineChart from './components/LineChart';
+import Autocomplete from './components/Autocomplete';
 
 require('@/assets/css/main.css');
 
@@ -296,6 +298,7 @@ export default {
   components: {
     BarChart,
     LineChart,
+    Autocomplete,
   },
   data: function () {
     return {
@@ -523,6 +526,9 @@ export default {
       maxLength: 512,
       successMessage: "string",
       errorMessage: "string",
+      autocomplete: [
+        "string"
+      ]
     }
   },
   computed: {
@@ -610,6 +616,15 @@ export default {
           });
         }
       });
+    },
+    fetchAutocompletion: async function() {
+      let input = this.input[this.currentPage][this.evalMode];
+      if(input.length < 5)
+        return;
+      console.log("Fetching autocompletion " + input);
+      let data = await getData('http://localhost:8080/wikihowqa/suggest?text='+input+'&count='+5);
+      console.log(data);
+      this.autocomplete = data;
     },
     fetchWikihowArticle: async function(question) {
       // get article from wikidata
@@ -727,6 +742,8 @@ export default {
       this.currentMethod[0][0] = this.method[0][0];
       let currentMethod = this.currentMethod[0][0];
       this.currentMethod = this.currentMethod.slice(0);
+
+      console.log("answer question " + this.input[0][0]);
 
       this.resetVars(0, 0, [currentMethod]);
 
