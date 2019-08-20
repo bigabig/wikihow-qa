@@ -12,9 +12,6 @@
       // Execute methods on create
       let input = document.getElementById("myInput");
 
-      /*execute a function when someone writes in the text field:*/
-      // input.addEventListener("input", this.onWrite);
-
       /*execute a function presses a key on the keyboard:*/
       input.addEventListener("keydown", this.onKeydown);
 
@@ -93,7 +90,8 @@
             b.innerHTML = "<strong>" + this.suggestions[i].substr(0, val.length) + "</strong>";
             b.innerHTML += this.suggestions[i].substr(val.length);
             /*insert a input field that will hold the current array item's value:*/
-            b.innerHTML += "<input type='hidden' value='" + this.suggestions[i] + "'>";
+            //
+            b.innerHTML += "<input type='hidden' value='" + this.suggestions[i].replace(/'/g, "&#39;") + "'>";
             /*execute a function when someone clicks on the item value (DIV element):*/
             b.addEventListener("click", (e) => {
               /*insert the value for the autocomplete text field:*/
