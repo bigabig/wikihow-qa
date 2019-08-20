@@ -562,11 +562,11 @@ export default {
             },
           }]
         },
-        // elements: {
-        //   line: {
-        //     tension: 0 // disables bezier curves
-        //   }
-        // }
+        elements: {
+          line: {
+            tension: 0 // disables bezier curves
+          }
+        }
       },
       summaryAllowed: {
         "gold": true,
@@ -1094,10 +1094,10 @@ export default {
         datasets: [
           {
             label: 'Method ' + method,
-            backgroundColor: ["red", "blue", "green", "blue", "red"],
-            borderColor: ["black", "grey", "black", "grey", "black"],
+            backgroundColor: 'rgba(139, 195, 74, 0.2)',
+            borderColor: '#8bc34a',
             data: ratings,
-            borderWidth: 5,
+            borderWidth: 3,
           },
         ]
       };
@@ -1116,11 +1116,11 @@ export default {
       this.lineChartData[method] = {
         labels: ratingsOverTime.labels,
         datasets: [{
-          label: 'Demo',
+          label: 'Avg. Rating Per Day',
           data: ratingsOverTime.data,
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          borderColor: 'rgba(255,99,132,1)',
-          borderWidth: 1
+          backgroundColor: 'rgba(139, 195, 74, 0.2)',
+          borderColor: '#8bc34a',
+          borderWidth: 2
         }]
       };
     },
