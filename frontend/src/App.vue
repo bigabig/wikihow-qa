@@ -845,10 +845,10 @@ export default {
             let summary;
             if(currentMethod === 'network') {
               console.log("Using short article for summarization with network");
-              summary = await this.fetchSummary(article.article, method);
+              summary = await this.generateSummary(article.article, method);
             } else {
               console.log("Using long article for summarization with " + method);
-              summary = await this.fetchSummary(article.full_article, method);
+              summary = await this.generateSummary(article.full_article, method);
             }
             this.summaries[1][0][method] = summary.split(".").filter(sentence => sentence.length > 0);
           }
@@ -864,10 +864,10 @@ export default {
         let summary;
         if(currentMethod === 'network') {
           console.log("Using short article for summarization with network");
-          summary = await this.fetchSummary(article.article, currentMethod);
+          summary = await this.generateSummary(article.article, currentMethod);
         } else {
           console.log("Using long article for summarization");
-          summary = await this.fetchSummary(article.full_article, currentMethod);
+          summary = await this.generateSummary(article.full_article, currentMethod);
         }
         this.summaries[1][0][currentMethod] = summary.split(".").filter(sentence => sentence.length > 0);
       }
