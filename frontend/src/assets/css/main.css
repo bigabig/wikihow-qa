@@ -1,12 +1,14 @@
-.KEYWORD {
-    color: black;
-    background: yellow;
+.DISPLAYKEYWORD {
     border: 1px black;
     padding: .2em .3em;
     margin: 0 .25em;
     line-height: 1;
     display: inline-block;
     border-radius: .25em;
+}
+.DISPLAYKEYWORD.KEYWORD {
+    color: black;
+    background: yellow;
 }
 
 .NER {

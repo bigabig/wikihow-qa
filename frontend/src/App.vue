@@ -53,12 +53,15 @@
                     <p v-if="evalMode === 0"><autocomplete :suggestions="autocomplete"></autocomplete></p>
 <!--                    <input v-on:keydown="fetchAutocompletion()" v-model="input[currentPage][evalMode]" class="w3-border w3-padding" type="text" style="width:100%">-->
                     <p v-if="evalMode === 1"><textarea v-model="input[currentPage][evalMode]" class="w3-border w3-padding" rows="5" style="width:100%"></textarea></p>
-                    <p><select v-model="method[currentPage][evalMode]" class="w3-select w3-border w3-padding w3-white" name="option">
-                      <option v-if="evalMode === 0" value="gold">Cheating</option>
-                      <option value="textrank">TextRank</option>
-                      <option value="network">Pointer-Generator Network</option>
-                      <option value="bertsum">BertSum</option>
-                    </select></p>
+                    <p>
+                      <label class="w3-opacity">Method:</label><br>
+                      <select v-model="method[currentPage][evalMode]" class="w3-select w3-border w3-padding w3-white" name="option">
+                        <option v-if="evalMode === 0" value="gold">Cheating</option>
+                        <option value="textrank">TextRank</option>
+                        <option value="network">Pointer-Generator Network</option>
+                        <option value="bertsum">BertSum</option>
+                      </select>
+                    </p>
                     <button v-if="evalMode === 0" v-on:click="answerQuestion" type="button" class="w3-button w3-theme"><i class="fa fa-search"></i>  Search!</button>
                     <button v-if="evalMode === 1" v-on:click="answerText" type="button" class="w3-button w3-theme"><i class="fa fa-search"></i>  Summarize!</button>
                   </div>
@@ -139,17 +142,27 @@
                     <h6 v-if="evalMode === 1" class="w3-opacity">Provide Text to summarize:</h6>
                     <p v-if="evalMode === 0"><autocomplete :suggestions="autocomplete"></autocomplete></p>
                     <p v-if="evalMode === 1"><textarea v-model="input[currentPage][evalMode]" id="textarea-eval" class="w3-border w3-padding" rows="5" style="width:100%"></textarea></p>
-                    <p><select v-model="method[currentPage][evalMode]" class="w3-select w3-border w3-padding w3-white" name="option">
-                      <option value="all" selected>All Methods</option>
-                      <option v-if="evalMode === 0" value="gold">Cheating</option>
-                      <option value="textrank">TextRank</option>
-                      <option value="network">Pointer-Generator Network</option>
-                      <option value="bertsum">BertSum</option>
-                    </select></p>
                     <p>
+                      <label class="w3-opacity">Method:</label><br>
+                      <select v-model="method[currentPage][evalMode]" class="w3-select w3-border w3-padding w3-white" name="option">
+                        <option value="all" selected>All Methods</option>
+                        <option v-if="evalMode === 0" value="gold">Cheating</option>
+                        <option value="textrank">TextRank</option>
+                        <option value="network">Pointer-Generator Network</option>
+                        <option value="bertsum">BertSum</option>
+                      </select>
+                    </p>
+                    <p>
+                      <label class="w3-opacity">Named Entities:</label><br>
                       <template v-for="entity in allEntities">
                         <input v-on:change="updateHighlights" type="checkbox" :id="entity" :value="entity" v-model="checkedEntities"><label :for="entity"><span :class="entity" class="NER-NO-REMOVE NER">{{entity}}</span></label>
                       </template>
+                    </p>
+                    <p>
+                        <label class="w3-opacity">Keywords:</label><br>
+                        <input v-on:change="updateKeywords" type="radio" id="keywordoption1" name="keywordoption" value="none" v-model="keywordOption"><label style="margin-left:4px;" for="keywordoption1">Don't show keywords</label><br>
+                        <input v-on:change="updateKeywords" type="radio" id="keywordoption2" name="keywordoption" value="text" v-model="keywordOption"><label style="margin-left:4px;" for="keywordoption2">Hightlight keywords in text</label><br>
+                        <input v-on:change="updateKeywords" type="radio" id="keywordoption3" name="keywordoption" value="list" v-model="keywordOption"><label style="margin-left:4px;" for="keywordoption3">Show keywords as list</label>
                     </p>
                     <button v-if="evalMode === 0" v-on:click="evaluateQuestion" id="button-evalquestion" type="button" class="w3-button w3-theme"><i class="fa fa-search"></i>  Analyze!</button>
                     <button v-if="evalMode === 1" v-on:click="evaluateText" id="button-evaltext" type="button" class="w3-button w3-theme"><i class="fa fa-search"></i>  Analyze!</button>
@@ -200,9 +213,16 @@
                     <ul>
                       <li v-for="sentence in summaries[currentPage][evalMode][currentMethod[currentPage][evalMode]]" v-html="sentence"></li>
                     </ul>
+                    <template v-if="showKeywordList">
+                      <hr class="w3-clear">
+                      <span class="w3-opacity">Keywords:</span>
+                      <ul style="margin-top:0;">
+                        <li v-for="keyword in foundKeywords[currentPage][evalMode][currentMethod[currentPage][evalMode]]">{{keyword.word}} - {{keyword.score}}</li>
+                      </ul>
+                    </template>
                     <hr class="w3-clear">
                     <p style="font-size:18px; margin-bottom: 8px;">
-                      <span class="w3-opacity">Submit a rating: </span>
+                      <span class="w3-opacity">Submit a rating:</span>
                       <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 1)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?1:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 1 }" class="fa fa-star"></span>
                       <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 2)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?2:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 2 }" class="fa fa-star"></span>
                       <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 3)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?3:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 3 }" class="fa fa-star"></span>
@@ -225,6 +245,13 @@
               <h4 v-if="evalMode === 1">Original User Text</h4>
               <hr class="w3-clear">
               <p v-html="text[currentPage][evalMode]"></p>
+              <template v-if="showKeywordList">
+                <hr class="w3-clear">
+                <span class="w3-opacity">Keywords:</span>
+                <ul style="margin-top:0;">
+                  <li v-for="keyword in foundKeywords[currentPage][evalMode]['text']">{{keyword.word}} - {{keyword.score}}</li>
+                </ul>
+              </template>
             </div>
           </div>
 
@@ -414,6 +441,7 @@ export default {
       checkedEntities: [
         "PERSON"
       ],
+      keywordOption: "none",
       hover: [[{
         "gold": 0,
         "textrank": 0,
@@ -456,6 +484,32 @@ export default {
         "network": true,
         "bertsum": true,
       }]],
+      foundKeywords: [[{
+        "text": "string",
+        "gold": "string",
+        "textrank": "string",
+        "network": "string",
+        "bertsum": "string"
+      },{
+        "text": "string",
+        "gold": "string",
+        "textrank": "string",
+        "network": "string",
+        "bertsum": "string"
+      }],[{
+        "text": "string",
+        "gold": "string",
+        "textrank": "string",
+        "network": "string",
+        "bertsum": "string",
+      },{
+        "text": "string",
+        "gold": "string",
+        "textrank": "string",
+        "network": "string",
+        "bertsum": "string",
+      }]],
+      showKeywordList: false,
       votes: {
         "gold": 0,
         "textrank": 0,
@@ -575,9 +629,11 @@ export default {
       for(let method of methods) {
         this.summaries[page][mode][method] = ["string"];
         this.ratingAllowed[page][mode][method] = true;
+        this.foundKeywords[page][mode][method] = "string";
         this.hover[page][mode][method] = 0;
       }
       this.text[page][mode] = "string";
+      this.foundKeywords[page][mode]["text"] = "string";
 
       this.summaries = this.summaries.slice(0);
       this.text = this.text.slice(0);
@@ -615,6 +671,33 @@ export default {
           });
         }
       });
+    },
+    updateKeywords: function() {
+      if(this.keywordOption === "none") {
+        // Dont show keywords in text
+        Array.from(document.getElementsByClassName("KEYWORD")).forEach(element => {
+          if(element.classList.contains("DISPLAYKEYWORD")) {
+            element.classList.remove("DISPLAYKEYWORD");
+          }
+        });
+        this.showKeywordList = false;
+      } else if (this.keywordOption === "text") {
+        // Show keywords in text
+        Array.from(document.getElementsByClassName("KEYWORD")).forEach(element => {
+          if(!element.classList.contains("DISPLAYKEYWORD")) {
+            element.classList.add("DISPLAYKEYWORD");
+          }
+        });
+        this.showKeywordList = false;
+      } else if (this.keywordOption === "list") {
+        // Dont show keywords in text
+        Array.from(document.getElementsByClassName("KEYWORD")).forEach(element => {
+          if(element.classList.contains("DISPLAYKEYWORD")) {
+            element.classList.remove("DISPLAYKEYWORD");
+          }
+        });
+        this.showKeywordList = true;
+      }
     },
     fetchAutocompletion: async function() {
       let input = this.input[this.currentPage][this.evalMode];
@@ -829,7 +912,7 @@ export default {
       console.log("Processing WikiHow article");
 
       // Get Named Entities, Get Keywords, Then visualize them
-      this.text[1][0] = await this.processEntitiesAndKeywords(this.text[1][0]);
+      this.text[1][0] = await this.processEntitiesAndKeywords(this.text[1][0], "text");
       this.text = this.text.slice(0);
 
       // summarize article
@@ -838,7 +921,7 @@ export default {
         for(let method of this.allMethods) {
           if(method === 'gold') {
             let summary = article.summary;
-            let processedSummary = await this.processEntitiesAndKeywords(summary);
+            let processedSummary = await this.processEntitiesAndKeywords(summary, method);
             this.summaries[1][0][method] = processedSummary.split(".").filter(sentence => sentence.length > 0);
           } else {
             // Get Summary
@@ -856,7 +939,7 @@ export default {
       // the gold method
       } else if (currentMethod === 'gold') {
         let summary = article.summary;
-        let processedSummary = await this.processEntitiesAndKeywords(summary);
+        let processedSummary = await this.processEntitiesAndKeywords(summary, currentMethod);
         this.summaries[1][0][currentMethod] = processedSummary.split(".").filter(sentence => sentence.length > 0);
       // or just the selected method
       } else {
@@ -893,7 +976,7 @@ export default {
         console.log("Processing text");
 
         // Get Named Entities, Get Keywords, Then visualize them
-        this.text[1][1] = await this.processEntitiesAndKeywords(input);
+        this.text[1][1] = await this.processEntitiesAndKeywords(input, "text");
         this.text = this.text.slice(0);
 
         // summarize input
@@ -942,13 +1025,19 @@ export default {
           //   return;
 
           let match;
-          let re = new RegExp(element.word,"g");
+
+          let re = new RegExp("((?:^|\\W))"+element.word+"(?:$|\\W)","g");
           while ((match = re.exec(text)) != null) {
-            let spanStart = "<span class='KEYWORD'>";
+            let spanStart;
+            if (this.keywordOption === "text") {
+              spanStart = "<span class='DISPLAYKEYWORD KEYWORD'>";
+            } else {
+              spanStart = "<span class='KEYWORD'>";
+            }
             let spanEnd = "</span>";
 
             replacements.push([match.index, spanStart]);
-            replacements.push([match.index + element.word.length, spanEnd]);
+            replacements.push([match.index + match[1].length + element.word.length, spanEnd]);
           }
         });
       }
@@ -967,7 +1056,7 @@ export default {
 
       return text;
     },
-    processEntitiesAndKeywords: async function(text) {
+    processEntitiesAndKeywords: async function(text, forText) {
       let entities = undefined;
       let keywords = undefined;
       try {
@@ -978,6 +1067,8 @@ export default {
       }
       try {
         keywords = await this.fetchKeywords(text);
+        this.foundKeywords[this.currentPage][this.evalMode][forText] = keywords;
+        this.foundKeywords = this.foundKeywords.slice(0);
       } catch(error) {
         console.log("An error occured during fetching the keywords for the WikiHow article");
         console.log(error);
@@ -987,7 +1078,7 @@ export default {
     generateSummary: async function(text, method) {
       try {
         let summary = await this.fetchSummary(text, method);
-        let processedSummary = await this.processEntitiesAndKeywords(summary);
+        let processedSummary = await this.processEntitiesAndKeywords(summary, method);
         return processedSummary;
       } catch(error) {
         console.log("An error occured during fetching the summary for the WikiHow article with the method " + method);
