@@ -14,7 +14,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
@@ -50,7 +49,7 @@ public class ElasticSearchService {
     }
 
     public List<WikihowArticle> findDocumentsForTopic(String topic, int count) {
-        return findDocumentsForTopic(topic, count, elasticindex);
+        return findDocumentsForTopic(topic, count, this.elasticindex);
     }
 
     public List<WikihowArticle> findDocumentsForTopic(String topic, int count, String elasticindex) {
@@ -113,7 +112,7 @@ public class ElasticSearchService {
         return result;
     }
 
-    public List<String> findSuggestions(String text, int count, String elasticindex) {
+    public List<String> findSuggestions(String text, int count) {
         logger.info("Query Autocomplete: " + text);
         List<String> result = new ArrayList<>();
 
@@ -128,7 +127,7 @@ public class ElasticSearchService {
         searchSourceBuilder.suggest(new SuggestBuilder().addSuggestion("titleSuggester", titleSuggest));
 
         // Build search request
-        SearchRequest searchRequest = new SearchRequest(elasticindex);
+        SearchRequest searchRequest = new SearchRequest(this.elasticindex);
         searchRequest.source(searchSourceBuilder);
         searchSourceBuilder.explain(false);
         searchSourceBuilder.fetchSource(false);

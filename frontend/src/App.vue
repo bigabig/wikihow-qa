@@ -305,11 +305,10 @@ export default {
       wikihowArticle: {
         "article": "string",
         "filename": "string",
+        "full_article": "string",
         "score": 0,
-        "summary": [
-          "string",
-        ],
-        "summary_string": "string",
+        "suggest_title": "string",
+        "summary": "string",
         "title": "string"
       },
       input: [[
@@ -631,7 +630,6 @@ export default {
       console.log("Fetching new WikiHow Artice");
       let data = await postData('http://localhost:8080/wikihowqa/articles', {
         "count": 1,
-        "elasticindex": "wikihow",
         "topic": question
       });
 
@@ -752,7 +750,7 @@ export default {
       try {
         article = await this.fetchWikihowArticle(this.input[0][0]);
         this.wikihowArticle = article;
-        this.text[0][0] = article.article;
+        this.text[0][0] = article.full_article;
         this.text = this.text.slice(0);
       } catch(error) {
         console.log("An error occured during fetching the WikiHow article");
@@ -763,14 +761,21 @@ export default {
       if(currentMethod !== 'gold') {
         // summarize article depending on the selected method
         try {
-          let summary = await this.fetchSummary(article.article, currentMethod);
+          let summary;
+          if(currentMethod === 'network') {
+            console.log("Using short article for summarization with network");
+            summary = await this.fetchSummary(article.article, currentMethod);
+          } else {
+            console.log("Using long article for summarization");
+            summary = await this.fetchSummary(article.full_article, currentMethod);
+          }
           this.summaries[0][0][currentMethod] = [summary];
         } catch(error) {
           console.log("An error occured during fetching the summary for the WikiHow article with the method " + currentMethod);
           console.log(error);
         }
       } else {
-        this.summaries[0][0][currentMethod] = article.summary;
+        this.summaries[0][0][currentMethod] = [article.summary];
       }
       this.summaries = this.summaries.slice(0);
     },
@@ -813,7 +818,7 @@ export default {
       let article = undefined;
       try {
         article = await this.fetchWikihowArticle(this.input[1][0]);
-        this.text[1][0] = article.article;
+        this.text[1][0] = article.full_article;
         this.text = this.text.slice(0);
       } catch(error) {
         console.log("An error occured during fetching the WikiHow article");
@@ -832,7 +837,7 @@ export default {
       if(currentMethod === 'all') {
         for(let method of this.allMethods) {
           if(method === 'gold') {
-            let summary = article.summary.join(" ");
+            let summary = article.summary;
             let processedSummary = await this.processEntitiesAndKeywords(summary);
             this.summaries[1][0][method] = [processedSummary];
           } else {
@@ -843,7 +848,7 @@ export default {
         }
       // the gold method
       } else if (currentMethod === 'gold') {
-        let summary = article.summary.join(" ");
+        let summary = article.summary;
         let processedSummary = await this.processEntitiesAndKeywords(summary);
         this.summaries[1][0][currentMethod] = [processedSummary];
       // or just the selected method

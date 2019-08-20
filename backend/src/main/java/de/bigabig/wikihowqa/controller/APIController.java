@@ -101,7 +101,13 @@ public class APIController {
             return ResponseEntity.badRequest().body(new ElasticArticleResponse());
         }
 
-        ElasticArticleResponse response = new ElasticArticleResponse(elasticSearch.findDocumentsForTopic(request.getTopic(), request.getCount(), request.getElasticindex()));
+        ElasticArticleResponse response;
+        if(request.getElasticindex() != null) {
+            response = new ElasticArticleResponse(elasticSearch.findDocumentsForTopic(request.getTopic(), request.getCount(), request.getElasticindex()));
+        } else {
+            response = new ElasticArticleResponse(elasticSearch.findDocumentsForTopic(request.getTopic(), request.getCount()));
+        }
+
         if(!response.getArticles().isEmpty()) {
             return ResponseEntity.ok(response);
         }
@@ -161,6 +167,6 @@ public class APIController {
     @CrossOrigin
     @GetMapping("/suggest")
     public ResponseEntity suggest(@RequestParam String text, @RequestParam int count) {
-        return ResponseEntity.ok(elasticSearch.findSuggestions(text, count, "autohow"));
+        return ResponseEntity.ok(elasticSearch.findSuggestions(text, count));
     }
 }
