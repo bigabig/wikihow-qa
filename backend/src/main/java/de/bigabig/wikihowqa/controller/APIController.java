@@ -15,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class APIController {
@@ -139,13 +137,26 @@ public class APIController {
     @CrossOrigin
     @GetMapping("/ratingsOverTime")
     public ResponseEntity<RatingsOverTimeResponse> getRatingsOverTime(@RequestParam String method) {
-        List<Rating> ratings = ratingDao.findAllByMethod(method);
+        List<Object[]> ratings = ratingDao.findAverage(method);
+
+
+//        List<Rating> ratings = ratingDao.findAllByMethod(method);
         List<Date> labels = new ArrayList<Date>();
         List<DatePoint> data = new ArrayList<DatePoint>();
-        for(Rating rating : ratings) {
-            labels.add(rating.getTimestamp());
-            data.add(new DatePoint(rating.getTimestamp(), rating.getRating()));
+//        for(Rating rating : ratings) {
+//            labels.add(rating.getTimestamp());
+//            data.add(new DatePoint(rating.getTimestamp(), rating.getRating()));
+//        }
+
+
+        for(Object[] rating : ratings) {
+            Calendar c = Calendar.getInstance();
+            c.set((int) rating[3], (int) rating[2] - 1, (int) rating[1], 0, 0);
+            labels.add(c.getTime());
+            data.add(new DatePoint(c.getTime(), (double) rating[0]));
         }
+        labels.sort(Date::compareTo);
+        data.sort(Comparator.comparing(DatePoint::getT));
         return ResponseEntity.ok(new RatingsOverTimeResponse(labels, data));
     }
 
