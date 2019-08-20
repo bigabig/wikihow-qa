@@ -769,13 +769,13 @@ export default {
             console.log("Using long article for summarization");
             summary = await this.fetchSummary(article.full_article, currentMethod);
           }
-          this.summaries[0][0][currentMethod] = [summary];
+          this.summaries[0][0][currentMethod] = summary.split(".").filter(sentence => sentence.length > 0);
         } catch(error) {
           console.log("An error occured during fetching the summary for the WikiHow article with the method " + currentMethod);
           console.log(error);
         }
       } else {
-        this.summaries[0][0][currentMethod] = [article.summary];
+        this.summaries[0][0][currentMethod] = article.summary.split(".").filter(sentence => sentence.length > 0);
       }
       this.summaries = this.summaries.slice(0);
     },
@@ -796,7 +796,7 @@ export default {
         // summarize article depending on the selected method
         try {
           let summary = await this.fetchSummary(input, currentMethod);
-          this.summaries[0][1][currentMethod] = [summary];
+          this.summaries[0][1][currentMethod] = summary.split(".").filter(sentence => sentence.length > 0);
         } catch(error) {
           console.log("An error occured during fetching the summary for the WikiHow article with the method " + currentMethod);
           console.log(error);
@@ -839,23 +839,37 @@ export default {
           if(method === 'gold') {
             let summary = article.summary;
             let processedSummary = await this.processEntitiesAndKeywords(summary);
-            this.summaries[1][0][method] = [processedSummary];
+            this.summaries[1][0][method] = processedSummary.split(".").filter(sentence => sentence.length > 0);
           } else {
             // Get Summary
-            let summary = await this.generateSummary(article.article, method);
-            this.summaries[1][0][method] = [summary];
+            let summary;
+            if(currentMethod === 'network') {
+              console.log("Using short article for summarization with network");
+              summary = await this.fetchSummary(article.article, method);
+            } else {
+              console.log("Using long article for summarization with " + method);
+              summary = await this.fetchSummary(article.full_article, method);
+            }
+            this.summaries[1][0][method] = summary.split(".").filter(sentence => sentence.length > 0);
           }
         }
       // the gold method
       } else if (currentMethod === 'gold') {
         let summary = article.summary;
         let processedSummary = await this.processEntitiesAndKeywords(summary);
-        this.summaries[1][0][currentMethod] = [processedSummary];
+        this.summaries[1][0][currentMethod] = processedSummary.split(".").filter(sentence => sentence.length > 0);
       // or just the selected method
       } else {
         // Get Summary
-        let summary = await this.generateSummary(article.article, currentMethod);
-        this.summaries[1][0][currentMethod] = [summary];
+        let summary;
+        if(currentMethod === 'network') {
+          console.log("Using short article for summarization with network");
+          summary = await this.fetchSummary(article.article, currentMethod);
+        } else {
+          console.log("Using long article for summarization");
+          summary = await this.fetchSummary(article.full_article, currentMethod);
+        }
+        this.summaries[1][0][currentMethod] = summary.split(".").filter(sentence => sentence.length > 0);
       }
       this.summaries = this.summaries.slice(0);
     },
@@ -888,13 +902,13 @@ export default {
           for(let method of this.allMethods) {
             if(method !== 'gold') {
               let summary = await this.generateSummary(input, method);
-              this.summaries[1][1][method] = [summary];
+              this.summaries[1][1][method] = summary.split(".").filter(sentence => sentence.length > 0);
             }
           }
           // or just the selected method
         } else {
           let summary = await this.generateSummary(input, currentMethod);
-          this.summaries[1][1][currentMethod] = [summary];
+          this.summaries[1][1][currentMethod] = summary.split(".").filter(sentence => sentence.length > 0);
         }
       }
       this.summaries = this.summaries.slice(0);
