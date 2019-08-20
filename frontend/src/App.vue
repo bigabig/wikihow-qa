@@ -1026,7 +1026,7 @@ export default {
 
           let match;
 
-          let re = new RegExp("((?:^|\\W))"+element.word+"(?:$|\\W)","g");
+          let re = new RegExp("((?:^|\\W))"+element.word+"(?:$|\\W)","ig");
           while ((match = re.exec(text)) != null) {
             let spanStart;
             if (this.keywordOption === "text") {
