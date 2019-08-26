@@ -220,6 +220,11 @@
                         <li v-for="keyword in foundKeywords[currentPage][evalMode][currentMethod[currentPage][evalMode]]">{{keyword.word}} - {{keyword.score}}</li>
                       </ul>
                     </template>
+                    <template v-if="evaluation[currentPage][evalMode][currentMethod[currentPage][evalMode]] !== 'string'">
+                      <hr class="w3-clear">
+                      <span class="w3-opacity">ROUGE Evaluation:</span>
+                      <pre>{{evaluation[currentPage][evalMode][currentMethod[currentPage][evalMode]]}}</pre>
+                    </template>
                     <hr class="w3-clear">
                     <p style="font-size:18px; margin-bottom: 8px;">
                       <span class="w3-opacity">Submit a rating:</span>
@@ -369,6 +374,27 @@ export default {
         "string",
         "string"
       ]],
+      evaluation: [[{
+        "gold": "string",
+        "textrank": "string",
+        "network": "string",
+        "bertsum": "string",
+      }, {
+        "gold": "string",
+        "textrank": "string",
+        "network": "string",
+        "bertsum": "string",
+      }],[{
+        "gold": "string",
+        "textrank": "string",
+        "network": "string",
+        "bertsum": "string",
+      }, {
+        "gold": "string",
+        "textrank": "string",
+        "network": "string",
+        "bertsum": "string",
+      }]],
       summaries: [[{
         "gold": [
           "string",
@@ -630,6 +656,7 @@ export default {
         this.summaries[page][mode][method] = ["string"];
         this.ratingAllowed[page][mode][method] = true;
         this.foundKeywords[page][mode][method] = "string";
+        this.evaluation[page][mode][method] = "string";
         this.hover[page][mode][method] = 0;
       }
       this.text[page][mode] = "string";
@@ -768,6 +795,22 @@ export default {
         return data.keywords;
       } else {
         throw new Error("Keywords are empty!");
+      }
+    },
+    fetchEvaluation: async function(summary, gold) {
+      // get entities from text
+      console.log("Fetching Evaluation");
+      let data = await postData('http://localhost:8080/wikihowqa/evaluate', {
+        "summary": summary,
+        "gold": gold
+      });
+
+      console.log("Success fetching evaluation");
+      console.log(data);
+      if(data.evaluation !== null && data.formatted !== null) {
+        return data;
+      } else {
+        throw new Error("Evaluation is empty!");
       }
     },
     fetchRatings: async function(method) {
@@ -925,15 +968,15 @@ export default {
             this.summaries[1][0][method] = processedSummary.split(". ").filter(sentence => sentence.length > 0);
           } else {
             // Get Summary
-            let summary;
+            let generatedSummary;
             if(currentMethod === 'network') {
               console.log("Using short article for summarization with network");
-              summary = await this.generateSummary(article.article, method);
+              generatedSummary = await this.generateSummary(article.article, method);
             } else {
               console.log("Using long article for summarization with " + method);
-              summary = await this.generateSummary(article.full_article, method);
+              generatedSummary = await this.generateSummary(article.full_article, method);
             }
-            this.summaries[1][0][method] = summary.split(". ").filter(sentence => sentence.length > 0);
+            this.summaries[1][0][method] = generatedSummary.processedSummary.split(". ").filter(sentence => sentence.length > 0);
           }
         }
       // the gold method
@@ -944,15 +987,21 @@ export default {
       // or just the selected method
       } else {
         // Get Summary
-        let summary;
+        let generatedSummary;
         if(currentMethod === 'network') {
           console.log("Using short article for summarization with network");
-          summary = await this.generateSummary(article.article, currentMethod);
+          generatedSummary = await this.generateSummary(article.article, currentMethod);
         } else {
           console.log("Using long article for summarization");
-          summary = await this.generateSummary(article.full_article, currentMethod);
+          generatedSummary = await this.generateSummary(article.article, currentMethod);
         }
-        this.summaries[1][0][currentMethod] = summary.split(". ").filter(sentence => sentence.length > 0);
+
+        let evaluation = await this.fetchEvaluation(generatedSummary.summary, article.summary);
+        console.log(evaluation.formatted);
+        console.log(evaluation.evaluation);
+
+        this.evaluation[1][0][currentMethod] = evaluation.formatted;
+        this.summaries[1][0][currentMethod] = generatedSummary.processedSummary.split(". ").filter(sentence => sentence.length > 0);
       }
       this.summaries = this.summaries.slice(0);
     },
@@ -984,14 +1033,14 @@ export default {
         if(currentMethod === 'all') {
           for(let method of this.allMethods) {
             if(method !== 'gold') {
-              let summary = await this.generateSummary(input, method);
-              this.summaries[1][1][method] = summary.split(". ").filter(sentence => sentence.length > 0);
+              let generatedSummary = await this.generateSummary(input, method);
+              this.summaries[1][1][method] = generatedSummary.processedSummary.split(". ").filter(sentence => sentence.length > 0);
             }
           }
           // or just the selected method
         } else {
-          let summary = await this.generateSummary(input, currentMethod);
-          this.summaries[1][1][currentMethod] = summary.split(". ").filter(sentence => sentence.length > 0);
+          let generatedSummary = await this.generateSummary(input, currentMethod);
+          this.summaries[1][1][currentMethod] = generatedSummary.processedSummary.split(". ").filter(sentence => sentence.length > 0);
         }
       }
       this.summaries = this.summaries.slice(0);
@@ -1079,7 +1128,10 @@ export default {
       try {
         let summary = await this.fetchSummary(text, method);
         let processedSummary = await this.processEntitiesAndKeywords(summary, method);
-        return processedSummary;
+        return {
+          "summary": summary,
+          "processedSummary": processedSummary,
+        };
       } catch(error) {
         console.log("An error occured during fetching the summary for the WikiHow article with the method " + method);
         console.log(error);

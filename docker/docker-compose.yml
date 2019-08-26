@@ -136,4 +136,13 @@ services:
       - anet
   # END: NER
 
+  # BEGIN: EVAL
+  eval:
+    image: bigabig/wikihow-eval:latest
+    ports:
+      - 5004:9000
+    networks:
+      - anet
+  # END: EVAL
+
 

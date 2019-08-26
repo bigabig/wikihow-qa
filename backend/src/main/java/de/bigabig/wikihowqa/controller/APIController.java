@@ -115,6 +115,18 @@ public class APIController {
     }
 
     @CrossOrigin
+    @PostMapping("/evaluate")
+    public ResponseEntity<WikihowEvalResponse> evaluate(@RequestBody WikihowEvalRequest request) {
+        WikihowEvalResponse evalResponse = gson.fromJson(restService.sendPostRequest("http://localhost:5004/evaluate", gson.toJson(request)), WikihowEvalResponse.class);
+
+        if(evalResponse != null) {
+            return ResponseEntity.ok(evalResponse);
+        }
+
+        return ResponseEntity.ok(new WikihowEvalResponse());
+    }
+
+    @CrossOrigin
     @PostMapping("/articles")
     public ResponseEntity<ElasticArticleResponse> articles(@RequestBody ElasticArticleRequest request) {
         if(request.getCount() <= 0 ) {
