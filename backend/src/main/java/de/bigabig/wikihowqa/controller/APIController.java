@@ -11,11 +11,17 @@ import de.bigabig.wikihowqa.model.rest.*;
 import de.bigabig.wikihowqa.model.service.*;
 import de.bigabig.wikihowqa.service.ElasticSearchService;
 import de.bigabig.wikihowqa.service.RestService;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.CoreSentence;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class APIController {
@@ -33,6 +39,21 @@ public class APIController {
     SummaryDao summaryDao;
 
     private Gson gson = new Gson();
+    private StanfordCoreNLP pipeline;
+
+
+    @PostConstruct
+    public void init() {
+        // set up pipeline properties
+        Properties props = new Properties();
+        // set the list of annotators to run
+//        props.setProperty("annotators", "tokenize,ssplit,truecase,pos,lemma,ner");
+        props.setProperty("annotators", "tokenize,ssplit,truecase");
+        // set a property for an annotator, in this case the coref annotator is being set to use the neural algorithm
+        props.setProperty("truecase.overwriteText", "true");
+        // build pipeline
+        pipeline = new StanfordCoreNLP(props);
+    }
 
     @CrossOrigin
     @PostMapping("/summarize")
@@ -50,8 +71,9 @@ public class APIController {
                 // try to get summarization from wikihow-network
                 WikihowNetworkRequest networkRequest = new WikihowNetworkRequest("tim", request.getText());
                 String networkResponse = restService.sendPostRequest("http://localhost:5001/summarize", gson.toJson(networkRequest));
+
                 if(networkResponse != null) {
-                    return ResponseEntity.ok(new SummarizationResponse(networkResponse));
+                    return ResponseEntity.ok(new SummarizationResponse(postProcessNetwork(networkResponse)));
                 }
                 break;
             case "bertsum":
@@ -59,7 +81,7 @@ public class APIController {
                 WikihowBertsumRequest request3 = new WikihowBertsumRequest(request.getText());
                 WikihowBertsumResponse bertsumResponse = gson.fromJson(restService.sendPostRequest("http://localhost:5002/summarize", gson.toJson(request3)), WikihowBertsumResponse.class);
                 if(bertsumResponse!= null) {
-                    return ResponseEntity.ok(new SummarizationResponse(bertsumResponse.getResult()));
+                    return ResponseEntity.ok(new SummarizationResponse(postProcessNetwork(bertsumResponse.getResult())));
                 }
                 break;
             default:
@@ -179,5 +201,99 @@ public class APIController {
     @GetMapping("/suggest")
     public ResponseEntity suggest(@RequestParam String text, @RequestParam int count) {
         return ResponseEntity.ok(elasticSearch.findSuggestions(text, count));
+    }
+
+    private String fixStuff(String text) {
+        // Fix Stuff
+        String result = text.replaceAll("\\s’\\s", "’");
+        result = result.replaceAll("\\s,\\s", ", ");
+        result = result.replaceAll("\\s:\\s", ": ");
+        result = result.replaceAll("\\sn't", "n't");
+        result = result.replaceAll("\\s``\\s", " \"");
+        result = result.replaceAll("\\s''\\s", "\" ");
+        result = result.replaceAll("\\s'", "'");
+        result = result.replaceAll("\\s%", "%");
+
+        // fix brakets
+        result = result.replaceAll("\\s\\(\\s", " (");
+        result = result.replaceAll("\\s\\[\\s", " [");
+        result = result.replaceAll("\\s\\{\\s", " {");
+        result = result.replaceAll("\\s\\)\\s*", ") ");
+        result = result.replaceAll("\\s]\\s*", "] ");
+        result = result.replaceAll("\\s}\\s*", "} ");
+
+        // Fix dots
+        result = result.replaceAll("\\s+\\.\\s+", ".");
+        result = result.replaceAll("\\s+\\.", ".");
+        result = result.replaceAll("\\.\\s+", ".");
+        result = result.replaceAll("\\.", ". ");
+
+        // Fix question marks
+        result = result.replaceAll("\\s+\\?\\s+", "?");
+        result = result.replaceAll("\\s+\\?", "?");
+        result = result.replaceAll("\\?\\s+", "?");
+        result = result.replaceAll("\\?", "? ");
+
+        // Fix exclamation marks
+        result = result.replaceAll("\\s+!\\s+", "!");
+        result = result.replaceAll("\\s+!", "!");
+        result = result.replaceAll("!\\s+", "!");
+        result = result.replaceAll("!", "! ");
+
+        return result.trim();
+    }
+
+    private String postProcessNetwork(String summary) {
+
+        // Fix input
+        String result = fixStuff(summary);
+        System.out.println("Fixed Input:");
+        System.out.println(result);
+
+        // Truecase everything
+        CoreDocument document = new CoreDocument(result);
+        pipeline.annotate(document);
+
+        List<String> collect = document.sentences().stream().map(CoreSentence::tokens)
+                .flatMap(coreLabels -> coreLabels.stream().map(coreLabel ->
+                    coreLabel.word().length() > coreLabel.originalText().length() ? coreLabel.originalText() : coreLabel.word()
+                ))
+                .collect(Collectors.toList());
+        System.out.println("All stuff:");
+        System.out.println(collect);
+        String truecaseResult = String.join(" ", collect);
+
+        List<String> t = document.sentences().stream().map(CoreSentence::tokens)
+                .flatMap(coreLabels -> coreLabels.stream().map(CoreLabel::word))
+                .collect(Collectors.toList());
+        System.out.println("Tokens:");
+        System.out.println(t);
+
+        // Fix output
+        truecaseResult = fixStuff(truecaseResult);
+        System.out.println("Fixed Output:");
+        System.out.println(truecaseResult);
+
+
+
+//        // list of the part-of-speech tags for the second sentence
+//        List<CoreLabel> tokens = sentence.tokens();
+//        System.out.println("Example: tokens");
+//        System.out.println(tokens);
+//        System.out.println();
+//
+//        // list of the part-of-speech tags for the second sentence
+//        List<String> posTags = sentence.posTags();
+//        System.out.println("Example: pos tags");
+//        System.out.println(posTags);
+//        System.out.println();
+//
+//        // list of the ner tags for the second sentence
+//        List<String> nerTags = sentence.nerTags();
+//        System.out.println("Example: ner tags");
+//        System.out.println(nerTags);
+//        System.out.println();
+
+        return truecaseResult;
     }
 }

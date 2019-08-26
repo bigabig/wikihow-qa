@@ -1,6 +1,6 @@
 <template>
   <div class="autocomplete" id="myInputParent" style="width:100%;">
-    <input autocomplete="off" id="myInput" v-model="$parent.input[$parent.currentPage][$parent.evalMode]" v-on:input="$parent.fetchAutocompletion()" class="w3-border w3-padding" type="text" style="width:100%">
+    <input placeholder="How to..." autocomplete="off" id="myInput" v-model="$parent.input[$parent.currentPage][$parent.evalMode]" v-on:input="$parent.fetchAutocompletion()" class="w3-border w3-padding" type="text" style="width:100%">
   </div>
 </template>
 

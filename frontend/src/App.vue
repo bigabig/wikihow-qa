@@ -52,7 +52,7 @@
                     <h6 v-if="evalMode === 1" class="w3-opacity">Provide Text to summarize:</h6>
                     <p v-if="evalMode === 0"><autocomplete :suggestions="autocomplete"></autocomplete></p>
 <!--                    <input v-on:keydown="fetchAutocompletion()" v-model="input[currentPage][evalMode]" class="w3-border w3-padding" type="text" style="width:100%">-->
-                    <p v-if="evalMode === 1"><textarea v-model="input[currentPage][evalMode]" class="w3-border w3-padding" rows="5" style="width:100%"></textarea></p>
+                    <p v-if="evalMode === 1"><textarea v-model="input[currentPage][evalMode]" class="w3-border w3-padding" rows="5" style="width:100%" placeholder="Some text..."></textarea></p>
                     <p>
                       <label class="w3-opacity">Method:</label><br>
                       <select v-model="method[currentPage][evalMode]" class="w3-select w3-border w3-padding w3-white" name="option">
@@ -141,7 +141,7 @@
                     <h6 v-if="evalMode === 0" class="w3-opacity">Type your question:</h6>
                     <h6 v-if="evalMode === 1" class="w3-opacity">Provide Text to summarize:</h6>
                     <p v-if="evalMode === 0"><autocomplete :suggestions="autocomplete"></autocomplete></p>
-                    <p v-if="evalMode === 1"><textarea v-model="input[currentPage][evalMode]" id="textarea-eval" class="w3-border w3-padding" rows="5" style="width:100%"></textarea></p>
+                    <p v-if="evalMode === 1"><textarea v-model="input[currentPage][evalMode]" id="textarea-eval" class="w3-border w3-padding" rows="5" style="width:100%" placeholder="Some text..."></textarea></p>
                     <p>
                       <label class="w3-opacity">Method:</label><br>
                       <select v-model="method[currentPage][evalMode]" class="w3-select w3-border w3-padding w3-white" name="option">
@@ -339,11 +339,11 @@ export default {
         "title": "string"
       },
       input: [[
-        "how to ...",
-        "string"
+        "",
+        ""
       ],[
-        "how to ...",
-        "string"
+        "",
+        ""
       ]],
       method: [[
         "textrank",
@@ -852,13 +852,13 @@ export default {
             console.log("Using long article for summarization");
             summary = await this.fetchSummary(article.full_article, currentMethod);
           }
-          this.summaries[0][0][currentMethod] = summary.split(".").filter(sentence => sentence.length > 0);
+          this.summaries[0][0][currentMethod] = summary.split(". ").filter(sentence => sentence.length > 0);
         } catch(error) {
           console.log("An error occured during fetching the summary for the WikiHow article with the method " + currentMethod);
           console.log(error);
         }
       } else {
-        this.summaries[0][0][currentMethod] = article.summary.split(".").filter(sentence => sentence.length > 0);
+        this.summaries[0][0][currentMethod] = article.summary.split(". ").filter(sentence => sentence.length > 0);
       }
       this.summaries = this.summaries.slice(0);
     },
@@ -879,7 +879,7 @@ export default {
         // summarize article depending on the selected method
         try {
           let summary = await this.fetchSummary(input, currentMethod);
-          this.summaries[0][1][currentMethod] = summary.split(".").filter(sentence => sentence.length > 0);
+          this.summaries[0][1][currentMethod] = summary.split(". ").filter(sentence => sentence.length > 0);
         } catch(error) {
           console.log("An error occured during fetching the summary for the WikiHow article with the method " + currentMethod);
           console.log(error);
@@ -922,7 +922,7 @@ export default {
           if(method === 'gold') {
             let summary = article.summary;
             let processedSummary = await this.processEntitiesAndKeywords(summary, method);
-            this.summaries[1][0][method] = processedSummary.split(".").filter(sentence => sentence.length > 0);
+            this.summaries[1][0][method] = processedSummary.split(". ").filter(sentence => sentence.length > 0);
           } else {
             // Get Summary
             let summary;
@@ -933,14 +933,14 @@ export default {
               console.log("Using long article for summarization with " + method);
               summary = await this.generateSummary(article.full_article, method);
             }
-            this.summaries[1][0][method] = summary.split(".").filter(sentence => sentence.length > 0);
+            this.summaries[1][0][method] = summary.split(". ").filter(sentence => sentence.length > 0);
           }
         }
       // the gold method
       } else if (currentMethod === 'gold') {
         let summary = article.summary;
         let processedSummary = await this.processEntitiesAndKeywords(summary, currentMethod);
-        this.summaries[1][0][currentMethod] = processedSummary.split(".").filter(sentence => sentence.length > 0);
+        this.summaries[1][0][currentMethod] = processedSummary.split(". ").filter(sentence => sentence.length > 0);
       // or just the selected method
       } else {
         // Get Summary
@@ -952,7 +952,7 @@ export default {
           console.log("Using long article for summarization");
           summary = await this.generateSummary(article.full_article, currentMethod);
         }
-        this.summaries[1][0][currentMethod] = summary.split(".").filter(sentence => sentence.length > 0);
+        this.summaries[1][0][currentMethod] = summary.split(". ").filter(sentence => sentence.length > 0);
       }
       this.summaries = this.summaries.slice(0);
     },
@@ -985,13 +985,13 @@ export default {
           for(let method of this.allMethods) {
             if(method !== 'gold') {
               let summary = await this.generateSummary(input, method);
-              this.summaries[1][1][method] = summary.split(".").filter(sentence => sentence.length > 0);
+              this.summaries[1][1][method] = summary.split(". ").filter(sentence => sentence.length > 0);
             }
           }
           // or just the selected method
         } else {
           let summary = await this.generateSummary(input, currentMethod);
-          this.summaries[1][1][currentMethod] = summary.split(".").filter(sentence => sentence.length > 0);
+          this.summaries[1][1][currentMethod] = summary.split(". ").filter(sentence => sentence.length > 0);
         }
       }
       this.summaries = this.summaries.slice(0);
