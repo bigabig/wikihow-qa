@@ -16,7 +16,7 @@ Note that there are two answers.
 The "Short Instructions" box shows the summarized answer, wheras the "Detailed Instructions" box shows the full detailed answer to the question.
 The "Short Instructions" box also contains a button asking the user to provide a better summary, if the current one is not satisfying.
 As shown in the image below, clicking on this button reveals a text input field, where the user can type the summary.
-![Alt text](images/feature12.png?raw=true"Provide a summary")
+![Alt text](images/feature12.png?raw=true "Provide a summary")
 The input mask consists of a simple input field for the question as well as a drop down menu to select the summarization method.
 While typing in the input field, the system will suggest possible questions.
 These suggestion can be selected either with the arrow keys and enter key or simply with a mouse click.
