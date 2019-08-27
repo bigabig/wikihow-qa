@@ -16,6 +16,7 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +38,25 @@ public class APIController {
 
     @Autowired
     SummaryDao summaryDao;
+
+
+    @Value("${servicener}")
+    private String NER_URL;
+
+    @Value("${servicekeyword}")
+    private String KEYWORD_URL;
+
+    @Value("${servicetextrank}")
+    private String TEXTRANK_URL;
+
+    @Value("${servicebertsum}")
+    private String BERTSUM_URL;
+
+    @Value("${servicenetwork}")
+    private String NETWORK_URL;
+
+    @Value("${serviceeval}")
+    private String EVAL_URL;
 
     private Gson gson = new Gson();
     private StanfordCoreNLP pipeline;
@@ -62,7 +82,7 @@ public class APIController {
             case "textrank":
                 // try to get summarization from wikihow-textrank
                 WikihowTextrankRequest textrankRequest = new WikihowTextrankRequest(request.getText(), 3);
-                String textrankResponse = restService.sendPostRequest("http://localhost:5000/summarize", gson.toJson(textrankRequest));
+                String textrankResponse = restService.sendPostRequest(TEXTRANK_URL + "/summarize", gson.toJson(textrankRequest));
                 if(textrankResponse != null) {
                     return ResponseEntity.ok(new SummarizationResponse(textrankResponse));
                 }
@@ -70,7 +90,7 @@ public class APIController {
             case "network":
                 // try to get summarization from wikihow-network
                 WikihowNetworkRequest networkRequest = new WikihowNetworkRequest("tim", request.getText());
-                String networkResponse = restService.sendPostRequest("http://localhost:5001/summarize", gson.toJson(networkRequest));
+                String networkResponse = restService.sendPostRequest(NETWORK_URL + "/summarize", gson.toJson(networkRequest));
 
                 if(networkResponse != null) {
                     return ResponseEntity.ok(new SummarizationResponse(postProcessNetwork(networkResponse)));
@@ -79,7 +99,7 @@ public class APIController {
             case "bertsum":
                 // try to get summarization from wikihow-bertsum
                 WikihowBertsumRequest request3 = new WikihowBertsumRequest(request.getText());
-                WikihowBertsumResponse bertsumResponse = gson.fromJson(restService.sendPostRequest("http://localhost:5002/summarize", gson.toJson(request3)), WikihowBertsumResponse.class);
+                WikihowBertsumResponse bertsumResponse = gson.fromJson(restService.sendPostRequest(BERTSUM_URL + "/summarize", gson.toJson(request3)), WikihowBertsumResponse.class);
                 if(bertsumResponse!= null) {
                     return ResponseEntity.ok(new SummarizationResponse(postProcessNetwork(bertsumResponse.getResult())));
                 }
@@ -93,7 +113,7 @@ public class APIController {
     @CrossOrigin
     @PostMapping("/keywords")
     public ResponseEntity<WikihowKeywordResponse> keywords(@RequestBody WikihowKeywordsRequest request) {
-        WikihowKeywordResponse keywordResponse = gson.fromJson(restService.sendPostRequest("http://localhost:8090/extractKeywords", gson.toJson(request)), WikihowKeywordResponse.class);
+        WikihowKeywordResponse keywordResponse = gson.fromJson(restService.sendPostRequest(KEYWORD_URL + "/extractKeywords", gson.toJson(request)), WikihowKeywordResponse.class);
 
         if(keywordResponse != null) {
             return ResponseEntity.ok(keywordResponse);
@@ -105,7 +125,7 @@ public class APIController {
     @CrossOrigin
     @PostMapping("/ner")
     public ResponseEntity<WikihowNERResponse> ner(@RequestBody WikihowNERRequest request) {
-        WikihowNERResponse nerResponse = gson.fromJson(restService.sendPostRequest("http://localhost:5003/ner", gson.toJson(request)), WikihowNERResponse.class);
+        WikihowNERResponse nerResponse = gson.fromJson(restService.sendPostRequest(NER_URL + "/ner", gson.toJson(request)), WikihowNERResponse.class);
 
         if(nerResponse != null) {
             return ResponseEntity.ok(nerResponse);
@@ -117,7 +137,7 @@ public class APIController {
     @CrossOrigin
     @PostMapping("/evaluate")
     public ResponseEntity<WikihowEvalResponse> evaluate(@RequestBody WikihowEvalRequest request) {
-        WikihowEvalResponse evalResponse = gson.fromJson(restService.sendPostRequest("http://localhost:5004/evaluate", gson.toJson(request)), WikihowEvalResponse.class);
+        WikihowEvalResponse evalResponse = gson.fromJson(restService.sendPostRequest(EVAL_URL + "/evaluate", gson.toJson(request)), WikihowEvalResponse.class);
 
         if(evalResponse != null) {
             return ResponseEntity.ok(evalResponse);

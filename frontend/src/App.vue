@@ -15,8 +15,8 @@
       <!-- Navbar -->
       <div class="w3-top">
         <div class="w3-bar w3-theme w3-left-align w3-large">
-          <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-          <span class="w3-bar-item w3-padding-large w3-theme-d5"><i class="fa fa-file-text w3-margin-right"></i>The LT Project</span>
+          <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" v-on:click="openNav"><i class="fa fa-bars"></i></a>
+          <span class="w3-bar-item w3-padding-large w3-theme-d5"><i class="fa fa-file-text w3-margin-right"></i>WikiHowSum</span>
           <a v-on:click="currentPage = 0" href="#" v-bind:class="{ 'w3-theme-d3': currentPage === 0 }" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-cogs"></i> Main</a>
           <a v-on:click="currentPage = 1" href="#" v-bind:class="{ 'w3-theme-d3': currentPage === 1 }" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-users"></i> User Study</a>
           <a v-on:click="currentPage = 2" href="#" v-bind:class="{ 'w3-theme-d3': currentPage === 2 }" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-bar-chart"></i> Evaluation</a>
@@ -24,15 +24,14 @@
       </div>
 
       <!-- Navbar on small screens -->
-      <div id="navDemo" class="w3-bar-block w3-theme-d2 w3-hide w3-hide-large w3-hide-medium w3-large">
-        <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 1</a>
-        <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 2</a>
-        <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 3</a>
-        <a href="#" class="w3-bar-item w3-button w3-padding-large">My Profile</a>
+      <div id="navDemo" style="margin-top: 50px; position: absolute; left: 0; right: 0; top: 0; z-index: 1" class="w3-bar-block w3-theme-d2 w3-hide w3-hide-large w3-hide-medium w3-large">
+        <a v-on:click="currentPage = 0" href="#" v-bind:class="{ 'w3-theme-d3': currentPage === 0 }" class="w3-bar-item w3-button w3-padding-large w3-hover-white" title="News"><i class="fa fa-cogs"></i> Main</a>
+        <a v-on:click="currentPage = 1" href="#" v-bind:class="{ 'w3-theme-d3': currentPage === 1 }" class="w3-bar-item w3-button w3-padding-large w3-hover-white" title="News"><i class="fa fa-users"></i> User Study</a>
+        <a v-on:click="currentPage = 2" href="#" v-bind:class="{ 'w3-theme-d3': currentPage === 2 }" class="w3-bar-item w3-button w3-padding-large w3-hover-white" title="News"><i class="fa fa-bar-chart"></i> Evaluation</a>
       </div>
 
       <!-- Page Container -->
-      <div v-if="currentPage === 0" class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
+      <div v-if="currentPage === 0" class="w3-container w3-content" :style="'max-width:1400px;margin-top:50px; padding: 16px 0px; min-height:' + minHeight + 'px;'">
         <!-- The Grid -->
         <div class="w3-row">
 
@@ -123,7 +122,7 @@
         <!-- End Page Container -->
       </div>
 
-      <div v-if="currentPage === 1" class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
+      <div v-if="currentPage === 1" class="w3-container w3-content" :style="'max-width:1400px;margin-top:50px; padding: 16px 0px; min-height:' + minHeight + 'px;'">
         <!-- Input -->
         <div class="w3-row">
 
@@ -158,12 +157,19 @@
                         <input v-on:change="updateHighlights" type="checkbox" :id="entity" :value="entity" v-model="checkedEntities"><label :for="entity"><span :class="entity" class="NER-NO-REMOVE NER">{{entity}}</span></label>
                       </template>
                     </p>
-                    <p>
+                    <div class="w3-row" style="margin-top: 1em; margin-bottom:1em;">
+                      <div class="w3-half">
                         <label class="w3-opacity">Keywords:</label><br>
                         <input v-on:change="updateKeywords" type="radio" id="keywordoption1" name="keywordoption" value="none" v-model="keywordOption"><label style="margin-left:4px;" for="keywordoption1">Don't show keywords</label><br>
                         <input v-on:change="updateKeywords" type="radio" id="keywordoption2" name="keywordoption" value="text" v-model="keywordOption"><label style="margin-left:4px;" for="keywordoption2">Hightlight keywords in text</label><br>
                         <input v-on:change="updateKeywords" type="radio" id="keywordoption3" name="keywordoption" value="list" v-model="keywordOption"><label style="margin-left:4px;" for="keywordoption3">Show keywords as list</label>
-                    </p>
+                      </div>
+                      <div v-if="evalMode === 0" class="w3-half">
+                        <label class="w3-opacity">ROUGE Scores:</label><br>
+                        <input type="radio" id="rougeOption1" name="rougeOption" value="false" v-model="showRouge"><label style="margin-left:4px;" for="rougeOption1">Hide ROUGE Evaluation</label><br>
+                        <input type="radio" id="rougeOption2" name="rougeOption" value="true" v-model="showRouge"><label style="margin-left:4px;" for="rougeOption2">Show ROUGE Evaluation</label><br>
+                      </div>
+                    </div>
                     <button v-if="evalMode === 0" v-on:click="evaluateQuestion" id="button-evalquestion" type="button" class="w3-button w3-theme"><i class="fa fa-search"></i>  Analyze!</button>
                     <button v-if="evalMode === 1" v-on:click="evaluateText" id="button-evaltext" type="button" class="w3-button w3-theme"><i class="fa fa-search"></i>  Analyze!</button>
                   </div>
@@ -220,14 +226,14 @@
                         <li v-for="keyword in foundKeywords[currentPage][evalMode][currentMethod[currentPage][evalMode]]">{{keyword.word}} - {{keyword.score}}</li>
                       </ul>
                     </template>
-                    <template v-if="evaluation[currentPage][evalMode][currentMethod[currentPage][evalMode]] !== 'string'">
+                    <template v-if="evaluation[currentPage][evalMode][currentMethod[currentPage][evalMode]] !== 'string' && showRouge === 'true'">
                       <hr class="w3-clear">
                       <span class="w3-opacity">ROUGE Evaluation:</span>
-                      <pre>{{evaluation[currentPage][evalMode][currentMethod[currentPage][evalMode]]}}</pre>
+                      <pre style="margin-top:0; white-space: pre-wrap; word-wrap: break-word;text-align: justify;">{{evaluation[currentPage][evalMode][currentMethod[currentPage][evalMode]]}}</pre>
                     </template>
                     <hr class="w3-clear">
                     <p style="font-size:18px; margin-bottom: 8px;">
-                      <span class="w3-opacity">Submit a rating:</span>
+                      <span class="w3-opacity">Submit a rating: </span>
                       <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 1)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?1:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 1 }" class="fa fa-star"></span>
                       <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 2)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?2:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 2 }" class="fa fa-star"></span>
                       <span v-on:click="rateMethod(currentPage, evalMode, currentMethod[currentPage][evalMode], 3)" @mouseover="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?3:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" @mouseleave="hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]=ratingAllowed[currentPage][evalMode][currentMethod[currentPage][evalMode]]?0:hover[currentPage][evalMode][currentMethod[currentPage][evalMode]]" :class="{ checked: hover[currentPage][evalMode][currentMethod[currentPage][evalMode]] >= 3 }" class="fa fa-star"></span>
@@ -265,7 +271,7 @@
         <!-- End Page Container -->
       </div>
 
-      <div v-if="currentPage === 2" class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
+      <div v-if="currentPage === 2" class="w3-container w3-content" :style="'max-width:1400px;margin-top:50px; padding: 16px 0px; min-height:' + minHeight + 'px;'">
         <!-- The Grid -->
         <div class="w3-row">
 
@@ -305,11 +311,9 @@
         <!-- End Page Container -->
       </div>
 
-      <br>
-
       <!-- Footer -->
-      <footer class="w3-container w3-theme-d3 w3-padding-16">
-        <h5>Footer</h5>
+      <footer class="w3-container w3-theme-d3">
+        <p>Developed by  <a href="http://bigabig.de" target="_blank">Tim Fischer</a></p>
       </footer>
       <footer class="w3-container w3-theme-d5">
         <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
@@ -332,233 +336,236 @@ export default {
     LineChart,
     Autocomplete,
   },
-  data: function () {
+  data() {
     return {
+      minHeight: 0,
+      showRouge: false,
       wikihowArticle: {
-        "article": "string",
-        "filename": "string",
-        "full_article": "string",
-        "score": 0,
-        "suggest_title": "string",
-        "summary": "string",
-        "title": "string"
+        article: 'string',
+        filename: 'string',
+        full_article: 'string',
+        score: 0,
+        suggest_title: 'string',
+        summary: 'string',
+        title: 'string',
       },
       input: [[
-        "",
-        ""
-      ],[
-        "",
-        ""
+        '',
+        '',
+      ], [
+        '',
+        '',
       ]],
       method: [[
-        "textrank",
-        "textrank"
-      ],[
-        "textrank",
-        "textrank"
+        'textrank',
+        'textrank',
+      ], [
+        'textrank',
+        'textrank',
       ]],
       currentMethod: [[
-        "textrank",
-        "textrank"
-      ],[
-        "textrank",
-        "textrank"
+        'textrank',
+        'textrank',
+      ], [
+        'textrank',
+        'textrank',
       ]],
-      allMethods: ["textrank", "gold"],
-      currentPage: 0,       // the actual body to show
-      evalMode: 0,          // analyze question or own text?
+      allMethods: ['textrank', 'gold', 'network', 'bertsum'],
+      currentPage: 0, // the actual body to show
+      evalMode: 0, // analyze question or own text?
       text: [[
-        "string",
-        "string"
-      ],[
-        "string",
-        "string"
+        'string',
+        'string',
+      ], [
+        'string',
+        'string',
       ]],
       evaluation: [[{
-        "gold": "string",
-        "textrank": "string",
-        "network": "string",
-        "bertsum": "string",
+        gold: 'string',
+        textrank: 'string',
+        network: 'string',
+        bertsum: 'string',
       }, {
-        "gold": "string",
-        "textrank": "string",
-        "network": "string",
-        "bertsum": "string",
-      }],[{
-        "gold": "string",
-        "textrank": "string",
-        "network": "string",
-        "bertsum": "string",
+        gold: 'string',
+        textrank: 'string',
+        network: 'string',
+        bertsum: 'string',
+      }], [{
+        gold: 'string',
+        textrank: 'string',
+        network: 'string',
+        bertsum: 'string',
       }, {
-        "gold": "string",
-        "textrank": "string",
-        "network": "string",
-        "bertsum": "string",
+        gold: 'string',
+        textrank: 'string',
+        network: 'string',
+        bertsum: 'string',
       }]],
       summaries: [[{
-        "gold": [
-          "string",
+        gold: [
+          'string',
         ],
-        "textrank": [
-          "string",
+        textrank: [
+          'string',
         ],
-        "network": [
-          "string",
+        network: [
+          'string',
         ],
-        "bertsum": [
-          "string",
-        ],
-      }, {
-        "gold": [
-          "string",
-        ],
-        "textrank": [
-          "string",
-        ],
-        "network": [
-          "string",
-        ],
-        "bertsum": [
-          "string",
-        ],
-      }],[{
-        "gold": [
-          "string",
-        ],
-        "textrank": [
-          "string",
-        ],
-        "network": [
-          "string",
-        ],
-        "bertsum": [
-          "string",
+        bertsum: [
+          'string',
         ],
       }, {
-      "gold": [
-        "string",
-      ],
-        "textrank": [
-        "string",
-      ],
-        "network": [
-        "string",
-      ],
-        "bertsum": [
-        "string",
-      ]}]],
+        gold: [
+          'string',
+        ],
+        textrank: [
+          'string',
+        ],
+        network: [
+          'string',
+        ],
+        bertsum: [
+          'string',
+        ],
+      }], [{
+        gold: [
+          'string',
+        ],
+        textrank: [
+          'string',
+        ],
+        network: [
+          'string',
+        ],
+        bertsum: [
+          'string',
+        ],
+      }, {
+        gold: [
+          'string',
+        ],
+        textrank: [
+          'string',
+        ],
+        network: [
+          'string',
+        ],
+        bertsum: [
+          'string',
+        ],
+      }]],
       allEntities: [
-        "PERSON",
-        "LOC",
-        "ORG",
-        "MISC",
-        "DATE",
-        "TIME",
-        "CARDINAL",
-        "ORDINAL",
-        "LAW",
-        "MONEY",
-        "PRODUCT",
-        "GPE",
-        "EVENT",
-        "NORP",
-        "FAC"
+        'PERSON',
+        'LOC',
+        'ORG',
+        'MISC',
+        'DATE',
+        'TIME',
+        'CARDINAL',
+        'ORDINAL',
+        'LAW',
+        'MONEY',
+        'PRODUCT',
+        'GPE',
+        'EVENT',
+        'NORP',
+        'FAC',
       ],
       checkedEntities: [
-        "PERSON"
+        'PERSON',
       ],
-      keywordOption: "none",
+      keywordOption: 'none',
       hover: [[{
-        "gold": 0,
-        "textrank": 0,
-        "network": 0,
-        "bertsum": 0,
-      },{
-        "gold": 0,
-        "textrank": 0,
-        "network": 0,
-        "bertsum": 0,
-      }],[{
-        "gold": 0,
-        "textrank": 0,
-        "network": 0,
-        "bertsum": 0,
-      },{
-        "gold": 0,
-        "textrank": 0,
-        "network": 0,
-        "bertsum": 0,
+        gold: 0,
+        textrank: 0,
+        network: 0,
+        bertsum: 0,
+      }, {
+        gold: 0,
+        textrank: 0,
+        network: 0,
+        bertsum: 0,
+      }], [{
+        gold: 0,
+        textrank: 0,
+        network: 0,
+        bertsum: 0,
+      }, {
+        gold: 0,
+        textrank: 0,
+        network: 0,
+        bertsum: 0,
       }]],
       ratingAllowed: [[{
-        "gold": true,
-        "textrank": true,
-        "network": true,
-        "bertsum": true,
-      },{
-        "gold": true,
-        "textrank": true,
-        "network": true,
-        "bertsum": true,
-      }],[{
-        "gold": true,
-        "textrank": true,
-        "network": true,
-        "bertsum": true,
-      },{
-        "gold": true,
-        "textrank": true,
-        "network": true,
-        "bertsum": true,
+        gold: true,
+        textrank: true,
+        network: true,
+        bertsum: true,
+      }, {
+        gold: true,
+        textrank: true,
+        network: true,
+        bertsum: true,
+      }], [{
+        gold: true,
+        textrank: true,
+        network: true,
+        bertsum: true,
+      }, {
+        gold: true,
+        textrank: true,
+        network: true,
+        bertsum: true,
       }]],
       foundKeywords: [[{
-        "text": "string",
-        "gold": "string",
-        "textrank": "string",
-        "network": "string",
-        "bertsum": "string"
-      },{
-        "text": "string",
-        "gold": "string",
-        "textrank": "string",
-        "network": "string",
-        "bertsum": "string"
-      }],[{
-        "text": "string",
-        "gold": "string",
-        "textrank": "string",
-        "network": "string",
-        "bertsum": "string",
-      },{
-        "text": "string",
-        "gold": "string",
-        "textrank": "string",
-        "network": "string",
-        "bertsum": "string",
+        text: 'string',
+        gold: 'string',
+        textrank: 'string',
+        network: 'string',
+        bertsum: 'string',
+      }, {
+        text: 'string',
+        gold: 'string',
+        textrank: 'string',
+        network: 'string',
+        bertsum: 'string',
+      }], [{
+        text: 'string',
+        gold: 'string',
+        textrank: 'string',
+        network: 'string',
+        bertsum: 'string',
+      }, {
+        text: 'string',
+        gold: 'string',
+        textrank: 'string',
+        network: 'string',
+        bertsum: 'string',
       }]],
       showKeywordList: false,
       votes: {
-        "gold": 0,
-        "textrank": 0,
-        "network": 0,
-        "bertsum": 0,
+        gold: 0,
+        textrank: 0,
+        network: 0,
+        bertsum: 0,
       },
       avgRating: {
-        "gold": 0,
-        "textrank": 0,
-        "network": 0,
-        "bertsum": 0,
+        gold: 0,
+        textrank: 0,
+        network: 0,
+        bertsum: 0,
       },
       barChartData: {
-        "gold": null,
-        "textrank": null,
-        "network": null,
-        "bertsum": null,
+        gold: null,
+        textrank: null,
+        network: null,
+        bertsum: null,
       },
       lineChartData: {
-        "gold": null,
-        "textrank": null,
-        "network": null,
-        "bertsum": null,
+        gold: null,
+        textrank: null,
+        network: null,
+        bertsum: null,
       },
       barChartOptions: {
         responsive: true,
@@ -568,8 +575,8 @@ export default {
               beginAtZero: true,
               stepSize: 1,
             },
-          }]
-        }
+          }],
+        },
       },
       lineChartOptions: {
         responsive: true,
@@ -578,89 +585,89 @@ export default {
             type: 'time',
             distribution: 'linear',
             time: {
-              unit: 'day'
-            }
+              unit: 'day',
+            },
           }],
           yAxes: [{
             ticks: {
               beginAtZero: true,
               stepSize: 1,
             },
-          }]
+          }],
         },
         elements: {
           line: {
-            tension: 0 // disables bezier curves
-          }
-        }
+            tension: 0, // disables bezier curves
+          },
+        },
       },
       summaryAllowed: {
-        "gold": true,
-        "textrank": true,
-        "network": true,
-        "bertsum": true,
+        gold: true,
+        textrank: true,
+        network: true,
+        bertsum: true,
       },
-      betterSummary: "",
+      betterSummary: '',
       showBetterSummary: false,
       maxLength: 512,
-      successMessage: "string",
-      errorMessage: "string",
+      successMessage: 'string',
+      errorMessage: 'string',
       autocomplete: [
-        "string"
-      ]
-    }
+        'string',
+      ],
+    };
   },
   computed: {
-    betterSummaryLength: function () {
-      return this.betterSummary.length
-    }
+    betterSummaryLength() {
+      return this.betterSummary.length;
+    },
   },
   watch: {
-    currentPage: function (val) {
+    currentPage(val) {
       // when page changes, update highlighted entities!
-      setTimeout(() => {this.updateHighlights();}, 1);
+      setTimeout(() => { this.updateHighlights(); }, 1);
 
       // when navigating to evaluation, update charts
-      if(val === 2) {
-        for(let method of this.allMethods) {
+      if (val === 2) {
+        for (const method of this.allMethods) {
           this.updateCharts(method);
         }
       }
     },
-    evalMode: function (val) {
+    evalMode(val) {
       // when eval mode changes, update highlighted entities!
-      setTimeout(() => {this.updateHighlights();}, 1);
-    }
+      setTimeout(() => { this.updateHighlights(); }, 1);
+    },
   },
   methods: {
-    showSuccessMessage: function(message) {
+    showSuccessMessage(message) {
       this.successMessage = message;
 
-      let successPopup = document.getElementById('success-popup');
+      const successPopup = document.getElementById('success-popup');
       successPopup.classList.remove('wikihow-popup-anim');
       setTimeout(() => {
         successPopup.classList.add('wikihow-popup-anim');
       }, 5);
     },
-    showErrorMessage: async function(message) {
+    async showErrorMessage(message) {
       this.errorMessage = message;
 
-      let errorPopup = document.getElementById('error-popup');
+      const errorPopup = document.getElementById('error-popup');
       errorPopup.classList.remove('wikihow-popup-anim');
       setTimeout(() => {
         errorPopup.classList.add('wikihow-popup-anim');
       }, 5);
     },
-    resetVars: function(page, mode, methods) {
-      for(let method of methods) {
-        this.summaries[page][mode][method] = ["string"];
+    resetVars(page, mode, methods) {
+      for (const method of methods) {
+        this.summaries[page][mode][method] = ['string'];
         this.ratingAllowed[page][mode][method] = true;
-        this.foundKeywords[page][mode][method] = "string";
-        this.evaluation[page][mode][method] = "string";
+        this.foundKeywords[page][mode][method] = 'string';
+        this.evaluation[page][mode][method] = 'string';
         this.hover[page][mode][method] = 0;
       }
-      this.text[page][mode] = "string";
-      this.foundKeywords[page][mode]["text"] = "string";
+      this.text[page][mode] = 'string';
+      this.foundKeywords[page][mode].text = 'string';
 
       this.summaries = this.summaries.slice(0);
       this.text = this.text.slice(0);
@@ -670,384 +677,371 @@ export default {
       // user provided summary stuff
       this.showBetterSummary = false;
       this.summaryAllowed = {
-        "gold": true,
-        "textrank": true,
-        "network": true,
-        "bertsum": true,
+        gold: true,
+        textrank: true,
+        network: true,
+        bertsum: true,
       };
-      this.betterSummary = "";
+      this.betterSummary = '';
     },
-    updateHighlights: function() {
+    updateHighlights() {
       // loop through all entities
-      this.allEntities.forEach(entity => {
+      this.allEntities.forEach((entity) => {
         // if entity is checked
-        if(this.checkedEntities.indexOf(entity) >= 0) {
-          Array.from(document.getElementsByClassName(entity)).forEach(element => {
+        if (this.checkedEntities.indexOf(entity) >= 0) {
+          Array.from(document.getElementsByClassName(entity)).forEach((element) => {
             // activate visualization
-            if(!element.classList.contains("NER")) {
-              element.classList.add("NER");
+            if (!element.classList.contains('NER')) {
+              element.classList.add('NER');
             }
           });
         // if entity is not checked
         } else {
-          Array.from(document.getElementsByClassName(entity)).forEach(element => {
+          Array.from(document.getElementsByClassName(entity)).forEach((element) => {
             // deactivate visualization
-            if(element.classList.contains("NER") && !element.classList.contains("NER-NO-REMOVE")) {
-              element.classList.remove("NER");
+            if (element.classList.contains('NER') && !element.classList.contains('NER-NO-REMOVE')) {
+              element.classList.remove('NER');
             }
           });
         }
       });
     },
-    updateKeywords: function() {
-      if(this.keywordOption === "none") {
+    updateKeywords() {
+      if (this.keywordOption === 'none') {
         // Dont show keywords in text
-        Array.from(document.getElementsByClassName("KEYWORD")).forEach(element => {
-          if(element.classList.contains("DISPLAYKEYWORD")) {
-            element.classList.remove("DISPLAYKEYWORD");
+        Array.from(document.getElementsByClassName('KEYWORD')).forEach((element) => {
+          if (element.classList.contains('DISPLAYKEYWORD')) {
+            element.classList.remove('DISPLAYKEYWORD');
           }
         });
         this.showKeywordList = false;
-      } else if (this.keywordOption === "text") {
+      } else if (this.keywordOption === 'text') {
         // Show keywords in text
-        Array.from(document.getElementsByClassName("KEYWORD")).forEach(element => {
-          if(!element.classList.contains("DISPLAYKEYWORD")) {
-            element.classList.add("DISPLAYKEYWORD");
+        Array.from(document.getElementsByClassName('KEYWORD')).forEach((element) => {
+          if (!element.classList.contains('DISPLAYKEYWORD')) {
+            element.classList.add('DISPLAYKEYWORD');
           }
         });
         this.showKeywordList = false;
-      } else if (this.keywordOption === "list") {
+      } else if (this.keywordOption === 'list') {
         // Dont show keywords in text
-        Array.from(document.getElementsByClassName("KEYWORD")).forEach(element => {
-          if(element.classList.contains("DISPLAYKEYWORD")) {
-            element.classList.remove("DISPLAYKEYWORD");
+        Array.from(document.getElementsByClassName('KEYWORD')).forEach((element) => {
+          if (element.classList.contains('DISPLAYKEYWORD')) {
+            element.classList.remove('DISPLAYKEYWORD');
           }
         });
         this.showKeywordList = true;
       }
     },
-    fetchAutocompletion: async function() {
-      let input = this.input[this.currentPage][this.evalMode];
-      if(input.length < 5)
-        return;
-      console.log("Fetching autocompletion " + input);
-      let data = await getData('http://localhost:8080/wikihowqa/suggest?text='+input+'&count='+5);
+    async fetchAutocompletion() {
+      const input = this.input[this.currentPage][this.evalMode];
+      if (input.length < 5) return;
+      console.log(`Fetching autocompletion ${input}`);
+      const data = await getData(`http://localhost:8080/wikihowqa/suggest?text=${input}&count=${5}`);
       console.log(data);
       this.autocomplete = data;
     },
-    fetchWikihowArticle: async function(question) {
+    async fetchWikihowArticle(question) {
       // get article from wikidata
-      console.log("Fetching new WikiHow Artice");
-      let data = await postData('http://localhost:8080/wikihowqa/articles', {
-        "count": 1,
-        "topic": question
+      console.log('Fetching new WikiHow Artice');
+      const data = await postData('http://localhost:8080/wikihowqa/articles', {
+        count: 1,
+        topic: question,
       });
 
-      console.log("Success fetching new WikiHow Article");
-      if(data.articles !== null && data.articles.length > 0) {
+      console.log('Success fetching new WikiHow Article');
+      if (data.articles !== null && data.articles.length > 0) {
         this.wikihowArticle = data.articles[0];
         return data.articles[0];
-      } else {
-        throw new Error("WikiHow Article is empty!");
       }
+      throw new Error('WikiHow Article is empty!');
     },
-    fetchSummary: async function(text, method) {
+    async fetchSummary(text, method) {
       // get summary from the certain method
-      console.log("Fetching new Summary with method " + method);
-      let data = await postData('http://localhost:8080/wikihowqa/summarize', {
-        "method": method,
-        "text": text
+      console.log(`Fetching new Summary with method ${method}`);
+      const data = await postData('http://localhost:8080/wikihowqa/summarize', {
+        method,
+        text,
       });
 
-      console.log("Success fetching new Summary");
+      console.log('Success fetching new Summary');
       console.log(data);
-      if(data.summary !== undefined && data.summary !== null && data.summary.length > 5) {
+      if (data.summary !== undefined && data.summary !== null && data.summary.length > 5) {
         return data.summary;
-      } else {
-        throw new Error("Summary is empty!");
       }
+      throw new Error('Summary is empty!');
     },
-    fetchEntities: async function(text) {
+    async fetchEntities(text) {
       // get entities from text
-      console.log("Fetching new Entities");
-      let data = await postData('http://localhost:8080/wikihowqa/ner', {
-        "text": text
+      console.log('Fetching new Entities');
+      const data = await postData('http://localhost:8080/wikihowqa/ner', {
+        text,
       });
 
-      console.log("Success fetching entities");
-      if(data.entities !== null && data.entities.length > 0) {
+      console.log('Success fetching entities');
+      if (data.entities !== null && data.entities.length > 0) {
         return data.entities;
-      } else {
-        throw new Error("Entities are empty!");
       }
+      throw new Error('Entities are empty!');
     },
-    fetchKeywords: async function(text) {
+    async fetchKeywords(text) {
       // get entities from text
-      console.log("Fetching Keywords");
-      let data = await postData('http://localhost:8080/wikihowqa/keywords', {
-        "count": 5,
-        "lang": "eng",
-        "text": text
+      console.log('Fetching Keywords');
+      const data = await postData('http://localhost:8080/wikihowqa/keywords', {
+        count: 5,
+        lang: 'eng',
+        text,
       });
 
-      console.log("Success fetching keywords");
-      if(data.keywords !== null && data.keywords.length > 0) {
+      console.log('Success fetching keywords');
+      if (data.keywords !== null && data.keywords.length > 0) {
         return data.keywords;
-      } else {
-        throw new Error("Keywords are empty!");
       }
+      throw new Error('Keywords are empty!');
     },
-    fetchEvaluation: async function(summary, gold) {
+    async fetchEvaluation(summary, gold) {
       // get entities from text
-      console.log("Fetching Evaluation");
-      let data = await postData('http://localhost:8080/wikihowqa/evaluate', {
-        "summary": summary,
-        "gold": gold
+      console.log('Fetching Evaluation');
+      const data = await postData('http://localhost:8080/wikihowqa/evaluate', {
+        summary,
+        gold,
       });
 
-      console.log("Success fetching evaluation");
+      console.log('Success fetching evaluation');
       console.log(data);
-      if(data.evaluation !== null && data.formatted !== null) {
+      if (data.evaluation !== null && data.formatted !== null) {
         return data;
-      } else {
-        throw new Error("Evaluation is empty!");
       }
+      throw new Error('Evaluation is empty!');
     },
-    fetchRatings: async function(method) {
-      console.log("Fetching Ratings for method" + method);
-      let data = await getData('http://localhost:8080/wikihowqa/ratings?method='+method);
+    async fetchRatings(method) {
+      console.log(`Fetching Ratings for method${method}`);
+      const data = await getData(`http://localhost:8080/wikihowqa/ratings?method=${method}`);
       return data;
     },
-    fetchRatingsOverTime: async function(method) {
-      console.log("Fetching Ratings over time for method" + method);
-      let data = await getData('http://localhost:8080/wikihowqa/ratingsOverTime?method='+method);
+    async fetchRatingsOverTime(method) {
+      console.log(`Fetching Ratings over time for method${method}`);
+      const data = await getData(`http://localhost:8080/wikihowqa/ratingsOverTime?method=${method}`);
       return data;
     },
-    rateMethod: async function(page, mode, method, rating) {
-      if(!this.ratingAllowed[page][mode][method])
-        return;
+    async rateMethod(page, mode, method, rating) {
+      if (!this.ratingAllowed[page][mode][method]) return;
 
-      console.log("Rating Method " + method + " with " + rating + " stars");
+      console.log(`Rating Method ${method} with ${rating} stars`);
       this.ratingAllowed[page][mode][method] = false;
-      let message = await postData('http://localhost:8080/wikihowqa/rate', {
-        "method": method,
-        "rating": rating,
-        "title": this.wikihowArticle.title
+      const message = await postData('http://localhost:8080/wikihowqa/rate', {
+        method,
+        rating,
+        title: this.wikihowArticle.title,
       });
       console.log(message);
-      this.showSuccessMessage("Thank you for this rating.");
+      this.showSuccessMessage('Thank you for this rating.');
     },
-    submitSummary: async function() {
-      let currentMethod = this.currentMethod[0][0];
+    async submitSummary() {
+      const currentMethod = this.currentMethod[0][0];
 
-      if(this.betterSummary.length < 5) {
-        this.showErrorMessage("Your summary is way to short!");
+      if (this.betterSummary.length < 5) {
+        this.showErrorMessage('Your summary is way to short!');
         return;
       }
 
-      if(!this.summaryAllowed[currentMethod])
-        return;
+      if (!this.summaryAllowed[currentMethod]) return;
 
-      if(this.betterSummaryLength > this.maxLength)
-        return;
+      if (this.betterSummaryLength > this.maxLength) return;
 
-      console.log("Submitting Summary for Article " + this.wikihowArticle.title + " and Method " + currentMethod);
+      console.log(`Submitting Summary for Article ${this.wikihowArticle.title} and Method ${currentMethod}`);
       this.summaryAllowed[currentMethod] = false;
-      let message = await postData('http://localhost:8080/wikihowqa/sum', {
-        "method": currentMethod,
-        "summary": this.betterSummary,
-        "title": this.wikihowArticle.title
+      const message = await postData('http://localhost:8080/wikihowqa/sum', {
+        method: currentMethod,
+        summary: this.betterSummary,
+        title: this.wikihowArticle.title,
       });
       console.log(message);
       this.showBetterSummary = false;
-      this.showSuccessMessage("Thanks for contributing a new summary! Very appreciated.");
+      this.showSuccessMessage('Thanks for contributing a new summary! Very appreciated.');
     },
-    answerQuestion: async function() {
+    async answerQuestion() {
       this.currentMethod[0][0] = this.method[0][0];
-      let currentMethod = this.currentMethod[0][0];
+      const currentMethod = this.currentMethod[0][0];
       this.currentMethod = this.currentMethod.slice(0);
 
-      console.log("answer question " + this.input[0][0]);
+      console.log(`answer question ${this.input[0][0]}`);
 
       this.resetVars(0, 0, [currentMethod]);
 
       // first fetch the wikihow article
-      let article = undefined;
+      let article;
       try {
         article = await this.fetchWikihowArticle(this.input[0][0]);
         this.wikihowArticle = article;
         this.text[0][0] = article.full_article;
         this.text = this.text.slice(0);
-      } catch(error) {
-        console.log("An error occured during fetching the WikiHow article");
+      } catch (error) {
+        console.log('An error occured during fetching the WikiHow article');
         console.log(error);
         return;
       }
 
-      if(currentMethod !== 'gold') {
+      if (currentMethod !== 'gold') {
         // summarize article depending on the selected method
         try {
           let summary;
-          if(currentMethod === 'network') {
-            console.log("Using short article for summarization with network");
+          if (currentMethod === 'network') {
+            console.log('Using short article for summarization with network');
             summary = await this.fetchSummary(article.article, currentMethod);
           } else {
-            console.log("Using long article for summarization");
+            console.log('Using long article for summarization');
             summary = await this.fetchSummary(article.full_article, currentMethod);
           }
-          this.summaries[0][0][currentMethod] = summary.split(". ").filter(sentence => sentence.length > 0);
-        } catch(error) {
-          console.log("An error occured during fetching the summary for the WikiHow article with the method " + currentMethod);
+          this.summaries[0][0][currentMethod] = summary.split('. ').filter(sentence => sentence.length > 0);
+        } catch (error) {
+          console.log(`An error occured during fetching the summary for the WikiHow article with the method ${currentMethod}`);
           console.log(error);
         }
       } else {
-        this.summaries[0][0][currentMethod] = article.summary.split(". ").filter(sentence => sentence.length > 0);
+        this.summaries[0][0][currentMethod] = article.summary.split('. ').filter(sentence => sentence.length > 0);
       }
       this.summaries = this.summaries.slice(0);
     },
-    answerText: async function() {
+    async answerText() {
       this.currentMethod[0][1] = this.method[0][1];
-      let currentMethod = this.currentMethod[0][1];
+      const currentMethod = this.currentMethod[0][1];
       this.currentMethod = this.currentMethod.slice(0);
 
       this.resetVars(0, 1, [currentMethod]);
 
       // get input from textarea
       this.text[0][1] = this.input[0][1];
-      let input = this.input[0][1];
+      const input = this.input[0][1];
       this.text = this.text.slice(0);
 
 
-      if(input !== undefined && input !== null && input.length > 5) {
+      if (input !== undefined && input !== null && input.length > 5) {
         // summarize article depending on the selected method
         try {
-          let summary = await this.fetchSummary(input, currentMethod);
-          this.summaries[0][1][currentMethod] = summary.split(". ").filter(sentence => sentence.length > 0);
-        } catch(error) {
-          console.log("An error occured during fetching the summary for the WikiHow article with the method " + currentMethod);
+          const summary = await this.fetchSummary(input, currentMethod);
+          this.summaries[0][1][currentMethod] = summary.split('. ').filter(sentence => sentence.length > 0);
+        } catch (error) {
+          console.log(`An error occured during fetching the summary for the WikiHow article with the method ${currentMethod}`);
           console.log(error);
         }
       }
       this.summaries = this.summaries.slice(0);
     },
-    evaluateQuestion: async function() {
+    async evaluateQuestion() {
       this.currentMethod[1][0] = this.method[1][0];
-      let currentMethod = this.currentMethod[1][0];
+      const currentMethod = this.currentMethod[1][0];
       this.currentMethod = this.currentMethod.slice(0);
 
-      if(currentMethod === 'all')
-        this.resetVars(1, 0, this.allMethods);
-      else
-        this.resetVars(1, 0, [currentMethod]);
+      if (currentMethod === 'all') this.resetVars(1, 0, this.allMethods);
+      else this.resetVars(1, 0, [currentMethod]);
 
       // first fetch the wikihow article
-      let article = undefined;
+      let article;
       try {
         article = await this.fetchWikihowArticle(this.input[1][0]);
         this.text[1][0] = article.full_article;
         this.text = this.text.slice(0);
-      } catch(error) {
-        console.log("An error occured during fetching the WikiHow article");
+      } catch (error) {
+        console.log('An error occured during fetching the WikiHow article');
         console.log(error);
         return;
       }
 
-      console.log("Processing WikiHow article");
+      console.log('Processing WikiHow article');
 
       // Get Named Entities, Get Keywords, Then visualize them
-      this.text[1][0] = await this.processEntitiesAndKeywords(this.text[1][0], "text");
+      this.text[1][0] = await this.processEntitiesAndKeywords(this.text[1][0], 'text');
       this.text = this.text.slice(0);
 
       // summarize article
       // depending on selection, use all methods
-      if(currentMethod === 'all') {
-        for(let method of this.allMethods) {
-          if(method === 'gold') {
-            let summary = article.summary;
-            let processedSummary = await this.processEntitiesAndKeywords(summary, method);
-            this.summaries[1][0][method] = processedSummary.split(". ").filter(sentence => sentence.length > 0);
+      if (currentMethod === 'all') {
+        for (const method of this.allMethods) {
+          if (method === 'gold') {
+            const { summary } = article;
+            const processedSummary = await this.processEntitiesAndKeywords(summary, method);
+            this.summaries[1][0][method] = processedSummary.split('. ').filter(sentence => sentence.length > 0);
           } else {
             // Get Summary
             let generatedSummary;
-            if(currentMethod === 'network') {
-              console.log("Using short article for summarization with network");
+            if (currentMethod === 'network') {
+              console.log('Using short article for summarization with network');
               generatedSummary = await this.generateSummary(article.article, method);
             } else {
-              console.log("Using long article for summarization with " + method);
+              console.log(`Using long article for summarization with ${method}`);
               generatedSummary = await this.generateSummary(article.full_article, method);
             }
-            this.summaries[1][0][method] = generatedSummary.processedSummary.split(". ").filter(sentence => sentence.length > 0);
+            this.summaries[1][0][method] = generatedSummary.processedSummary.split('. ').filter(sentence => sentence.length > 0);
           }
         }
       // the gold method
       } else if (currentMethod === 'gold') {
-        let summary = article.summary;
-        let processedSummary = await this.processEntitiesAndKeywords(summary, currentMethod);
-        this.summaries[1][0][currentMethod] = processedSummary.split(". ").filter(sentence => sentence.length > 0);
+        const { summary } = article;
+        const processedSummary = await this.processEntitiesAndKeywords(summary, currentMethod);
+        this.summaries[1][0][currentMethod] = processedSummary.split('. ').filter(sentence => sentence.length > 0);
       // or just the selected method
       } else {
         // Get Summary
         let generatedSummary;
-        if(currentMethod === 'network') {
-          console.log("Using short article for summarization with network");
+        if (currentMethod === 'network') {
+          console.log('Using short article for summarization with network');
           generatedSummary = await this.generateSummary(article.article, currentMethod);
         } else {
-          console.log("Using long article for summarization");
+          console.log('Using long article for summarization');
           generatedSummary = await this.generateSummary(article.article, currentMethod);
         }
 
-        let evaluation = await this.fetchEvaluation(generatedSummary.summary, article.summary);
+        const evaluation = await this.fetchEvaluation(generatedSummary.summary, article.summary);
         console.log(evaluation.formatted);
         console.log(evaluation.evaluation);
 
         this.evaluation[1][0][currentMethod] = evaluation.formatted;
-        this.summaries[1][0][currentMethod] = generatedSummary.processedSummary.split(". ").filter(sentence => sentence.length > 0);
+        this.summaries[1][0][currentMethod] = generatedSummary.processedSummary.split('. ').filter(sentence => sentence.length > 0);
       }
       this.summaries = this.summaries.slice(0);
     },
-    evaluateText: async function() {
+    async evaluateText() {
       this.currentMethod[1][1] = this.method[1][1];
-      let currentMethod = this.currentMethod[1][1];
+      const currentMethod = this.currentMethod[1][1];
       this.currentMethod = this.currentMethod.slice(0);
 
-      if(currentMethod === 'all')
-        this.resetVars(1, 1, this.allMethods);
-      else
-        this.resetVars(1, 1, [currentMethod]);
+      if (currentMethod === 'all') this.resetVars(1, 1, this.allMethods);
+      else this.resetVars(1, 1, [currentMethod]);
 
       // get input from textarea
       this.text[1][1] = this.input[1][1];
-      let input = this.input[1][1];
+      const input = this.input[1][1];
       this.text = this.text.slice(0);
 
       // then process it
-      if(input !== undefined && input !== null && input.length > 5) {
-        console.log("Processing text");
+      if (input !== undefined && input !== null && input.length > 5) {
+        console.log('Processing text');
 
         // Get Named Entities, Get Keywords, Then visualize them
-        this.text[1][1] = await this.processEntitiesAndKeywords(input, "text");
+        this.text[1][1] = await this.processEntitiesAndKeywords(input, 'text');
         this.text = this.text.slice(0);
 
         // summarize input
         // depending on selection, use all methods
-        if(currentMethod === 'all') {
-          for(let method of this.allMethods) {
-            if(method !== 'gold') {
-              let generatedSummary = await this.generateSummary(input, method);
-              this.summaries[1][1][method] = generatedSummary.processedSummary.split(". ").filter(sentence => sentence.length > 0);
+        if (currentMethod === 'all') {
+          for (const method of this.allMethods) {
+            if (method !== 'gold') {
+              const generatedSummary = await this.generateSummary(input, method);
+              this.summaries[1][1][method] = generatedSummary.processedSummary.split('. ').filter(sentence => sentence.length > 0);
             }
           }
           // or just the selected method
         } else {
-          let generatedSummary = await this.generateSummary(input, currentMethod);
-          this.summaries[1][1][currentMethod] = generatedSummary.processedSummary.split(". ").filter(sentence => sentence.length > 0);
+          const generatedSummary = await this.generateSummary(input, currentMethod);
+          this.summaries[1][1][currentMethod] = generatedSummary.processedSummary.split('. ').filter(sentence => sentence.length > 0);
         }
       }
       this.summaries = this.summaries.slice(0);
     },
-    visualizeEntitiesAndKeywords: function(text, entities, keywords) {
-      console.log("Visualizing Entities and Keywords");
-      if(entities === undefined && keywords === undefined) {
+    visualizeEntitiesAndKeywords(text, entities, keywords) {
+      console.log('Visualizing Entities and Keywords');
+      if (entities === undefined && keywords === undefined) {
         return;
       }
 
@@ -1057,33 +1051,33 @@ export default {
       // Collect all text replacements
       let replacements = [];
 
-      if(entities !== undefined) {
+      if (entities !== undefined) {
         entities.forEach((element) => {
-          let spanClass = this.checkedEntities.indexOf(element.label) >= 0 ? "NER " + element.label : element.label;
-          let spanStart = "<span class='"+ spanClass + "'>";
-          let spanEnd = " <b class='NER-LABEL'>"+element.label+"</b></span>";
+          const spanClass = this.checkedEntities.indexOf(element.label) >= 0 ? `NER ${element.label}` : element.label;
+          const spanStart = `<span class='${spanClass}'>`;
+          const spanEnd = ` <b class='NER-LABEL'>${element.label}</b></span>`;
 
           replacements.push([element.start, spanStart]);
           replacements.push([element.end, spanEnd]);
         });
       }
 
-      if(keywords !== undefined) {
+      if (keywords !== undefined) {
         keywords.forEach((element) => {
           // if(!options[element[1]])
           //   return;
 
           let match;
 
-          let re = new RegExp("((?:^|\\W))"+element.word+"(?:$|\\W)","ig");
+          const re = new RegExp(`((?:^|\\W))${element.word}(?:$|\\W)`, 'ig');
           while ((match = re.exec(text)) != null) {
             let spanStart;
-            if (this.keywordOption === "text") {
+            if (this.keywordOption === 'text') {
               spanStart = "<span class='DISPLAYKEYWORD KEYWORD'>";
             } else {
               spanStart = "<span class='KEYWORD'>";
             }
-            let spanEnd = "</span>";
+            const spanEnd = '</span>';
 
             replacements.push([match.index, spanStart]);
             replacements.push([match.index + match[1].length + element.word.length, spanEnd]);
@@ -1097,73 +1091,73 @@ export default {
       // Insert the replacements
       let newText = text;
       let offset = 0;
-      replacements.forEach(function (element) {
+      replacements.forEach((element) => {
         newText = text.slice(0, element[0] + offset) + element[1] + text.slice(element[0] + offset, text.length);
         text = newText;
-        offset = offset + element[1].length;
+        offset += element[1].length;
       });
 
       return text;
     },
-    processEntitiesAndKeywords: async function(text, forText) {
-      let entities = undefined;
-      let keywords = undefined;
+    async processEntitiesAndKeywords(text, forText) {
+      let entities;
+      let keywords;
       try {
         entities = await this.fetchEntities(text);
-      } catch(error) {
-        console.log("An error occured during fetching the entities for the WikiHow article");
+      } catch (error) {
+        console.log('An error occured during fetching the entities for the WikiHow article');
         console.log(error);
       }
       try {
         keywords = await this.fetchKeywords(text);
         this.foundKeywords[this.currentPage][this.evalMode][forText] = keywords;
         this.foundKeywords = this.foundKeywords.slice(0);
-      } catch(error) {
-        console.log("An error occured during fetching the keywords for the WikiHow article");
+      } catch (error) {
+        console.log('An error occured during fetching the keywords for the WikiHow article');
         console.log(error);
       }
       return this.visualizeEntitiesAndKeywords(text, entities, keywords);
     },
-    generateSummary: async function(text, method) {
+    async generateSummary(text, method) {
       try {
-        let summary = await this.fetchSummary(text, method);
-        let processedSummary = await this.processEntitiesAndKeywords(summary, method);
+        const summary = await this.fetchSummary(text, method);
+        const processedSummary = await this.processEntitiesAndKeywords(summary, method);
         return {
-          "summary": summary,
-          "processedSummary": processedSummary,
+          summary,
+          processedSummary,
         };
-      } catch(error) {
-        console.log("An error occured during fetching the summary for the WikiHow article with the method " + method);
+      } catch (error) {
+        console.log(`An error occured during fetching the summary for the WikiHow article with the method ${method}`);
         console.log(error);
       }
     },
-    updateCharts: async function(method) {
-      let ratings = await this.fetchRatings(method);
+    async updateCharts(method) {
+      const ratings = await this.fetchRatings(method);
       console.log(ratings);
 
       this.barChartData[method] = {
-        labels: ["1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"],
+        labels: ['1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars'],
         datasets: [
           {
-            label: 'Method ' + method,
+            label: `Method ${method}`,
             backgroundColor: 'rgba(139, 195, 74, 0.2)',
             borderColor: '#8bc34a',
             data: ratings,
             borderWidth: 3,
           },
-        ]
+        ],
       };
 
       this.votes[method] = ratings.reduce((a, b) => a + b);
 
       let totalRating = 0;
-      for(let i = 0; i < ratings.length; i++) {
-        totalRating += (i+1) * ratings[i];
+      for (let i = 0; i < ratings.length; i++) {
+        totalRating += (i + 1) * ratings[i];
       }
       this.avgRating[method] = totalRating / this.votes[method];
       this.avgRating[method] = this.avgRating[method].toFixed(2);
 
-      let ratingsOverTime = await this.fetchRatingsOverTime(method);
+      const ratingsOverTime = await this.fetchRatingsOverTime(method);
       console.log(ratingsOverTime);
       this.lineChartData[method] = {
         labels: ratingsOverTime.labels,
@@ -1172,17 +1166,33 @@ export default {
           data: ratingsOverTime.data,
           backgroundColor: 'rgba(139, 195, 74, 0.2)',
           borderColor: '#8bc34a',
-          borderWidth: 2
-        }]
+          borderWidth: 2,
+        }],
       };
+    },
+    // Used to toggle the menu on smaller screens when clicking on the menu button
+    openNav() {
+      const x = document.getElementById('navDemo');
+      if (x.className.indexOf('w3-show') === -1) {
+        x.className += ' w3-show';
+      } else {
+        x.className = x.className.replace(' w3-show', '');
+      }
+    },
+    onResize() {
+      this.minHeight = window.innerHeight - 155;
     },
   },
   created() {
     // Execute methods on create
+    window.addEventListener('resize', this.onResize);
+  },
+  mounted() {
+    this.onResize();
   },
 };
 
-function getData(url = '', data = {}) {
+function getData(url = '') {
   // Default options are marked with *
   return fetch(url, {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -1215,16 +1225,6 @@ function postData(url = '', data = {}) {
     body: JSON.stringify(data), // body data type must match "Content-Type" header
   })
     .then(response => response.json()); // parses JSON response into native JavaScript objects
-}
-
-// Used to toggle the menu on smaller screens when clicking on the menu button
-function openNav() {
-  var x = document.getElementById("navDemo");
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-  } else {
-    x.className = x.className.replace(" w3-show", "");
-  }
 }
 </script>
 
