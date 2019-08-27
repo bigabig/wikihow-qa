@@ -5,7 +5,6 @@ Question Answering System based on WikiHow
 
 ### Step 0: Requirements
 To run the Wikihow QA Application, you need to install the following:
-- Git
 - Docker
 - docker-compose
 - Python3
@@ -33,7 +32,7 @@ This is the advanced guide on building all docker containers yourself. The provi
   - ROUGE Evaluation: [LINK](services/wikihow-evaluation/README.md)
 
 #### Step 1.2 Start the Docker containers
-- Navigate to wikihow-qa/docker
+- Navigate to docker diretory: cd wikihow-qa/docker
 - Download & start all necessary containers: docker-compose up -d
 - Check if all containers are running: docker ps
   - you should see: elasticsearch, mysql, server, textrank, network, bertsum, ner, eval, keywords

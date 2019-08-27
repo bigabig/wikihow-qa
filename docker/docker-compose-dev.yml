@@ -64,6 +64,17 @@ services:
       - ./data/elasticsearch:/usr/share/elasticsearch/data
   # END: ELASTICSEARCH
 
+  # BEGIN: KIBANA
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.2.3
+    ports:
+      - 5601:5601
+    networks:
+      - anet
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+  # END: KIBANA
+
   # BEGIN: mysql
   mysql:
     image: "mysql:5.7"
@@ -87,6 +98,21 @@ services:
     networks:
       - anet
   # END: mysql
+
+  # BEGIN: phpmyadmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=mysql
+      - MYSQL_USERNAME=root
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+     - 80:80
+    volumes:
+     - /sessions
+    networks:
+     - anet
+  # END: phpmyadmin
 
   # BEGIN: TEXTRANK
   textrank:
