@@ -39,7 +39,7 @@ This is the advanced guide on building all docker containers yourself. The provi
 
 ### Step 2: Import the data
 As the name suggests, the Wikihow QA Application uses WikiHow as the main dataset. For the application to work, it is necessary to import the data into the elasticsearch docker. The original dataset can be found here: https://github.com/mahnazkoupaee/WikiHow-Dataset
-- Download the dataset here: https://drive.google.com/file/d/1VvPrW1MZAS9PHdUWridi6XBXzLJZdmUk/view?usp=sharing
+- Download the dataset here: 
 - Unzip the archive to wikihow-qa/
   - Now you should have a folder wikihow-qa/dataset/articles_full/ that contains many *.json files.
 - Navigate to tools: cd wikihow-qa/tools
@@ -53,7 +53,7 @@ As the name suggests, the Wikihow QA Application uses WikiHow as the main datase
 - Once the import is finished, you can deactivate the virtual environment: deactivate
 
 ### Step 3: Use the application
-All docker containers are running, the data is imported... You are now ready to use the WikiHow QA Application! You can find a detailed user guide that helps you exploring all functionalities here: https://github.com/bigabig/wikihow-qa/blob/master/USER_GUIDE.md
+All docker containers are running, the data is imported... You are now ready to use the WikiHow QA Application! You can find a detailed user guide that helps you exploring all functionalities here: 
 - Use the application: http://localhost:8080/wikihowqa/index.html
 - Or view the REST API: http://localhost:8080/wikihowqa/swagger-ui.html
 - Now you can start & stop the application as you like
