@@ -1,62 +1,73 @@
-# WikiHow QA
-Question Answering System based on WikiHow
+# WikiHow QA - User Guide
+The WikiHow QA Application has four main features:
+1. Answer "How to" Questions
+2. Summarize provided text
+3. Analyse, Compare & Rate summarization techniques
+4. View Statistics of summarization techniques
 
-## Set-up WikiHow QA
+You can read more about each feature and how to use it below. 
+Please note that there is a short FAQ (LINK) at the bottom of this page.
 
-### Step 0: Requirements
-To run the Wikihow QA Application, you need to install the following:
-- Git
-- Docker
-- docker-compose
-- Python3
-- Python3 virtual environment (venv)
-Also, you need to clone this repo:
-- git clone https://github.com/bigabig/wikihow-qa.git
+## Feature 1: "How to..." Questions
+This is the Question Answering Component of WikiHow QA. 
+The image below shows the input mask as well as the answers. 
+![Alt text](images/feature11.png?raw=true "Question Answering")
+Note that there are two answers.
+The "Short Instructions" box shows the summarized answer, wheras the "Detailed Instructions" box shows the full detailed answer to the question.
+The "Short Instructions" box also contains a button asking the user to provide a better summary, if the current one is not satisfying.
+As shown in the image below, clicking on this button reveals a text input field, where the user can type the summary.
+![Alt text](images/feature12.png?raw=true"Provide a summary")
+The input mask consists of a simple input field for the question as well as a drop down menu to select the summarization method.
+While typing in the input field, the system will suggest possible questions.
+These suggestion can be selected either with the arrow keys and enter key or simply with a mouse click.
+See the image below to get an idea of the auto completion.
+![Alt text](images/feature13.png?raw=true "Auto Completion")
 
-### Step 1: Set-up the docker network
-The WikiHow QA Application consists of a network of many different docker containers. There are two ways to get all needed docker containers:
-1. Easy: Download all necessary docker containers from Docker Hub
-2. Advanced: Build all docker containers yourself
-Building all docker containers will take significantly more time. Skip Step 1.1 if you do not want to follow the advanced instructions.
+## Feature 2: Summarize provided text
+This is the summarization component of WikiHow QA.
+The image below shows the input mask with some example text as well as it's summary.
+![Alt text](images/feature21.png?raw=true "Text summarization")
+Similar as with the Question Answering component, the input mask consists of a simple text input field for the text and a drop down menu to select the summarization method. 
 
-#### Step 1.1 Building Docker containers (Advanced, you can skip this)
-This is the advanced guide on building all docker containers yourself. The provided links contain detailed instructions on how to build the respective container.
-- Build the Frontend: https://github.com/bigabig/wikihow-qa/tree/master/frontend#building-the-frontend
-- Build the Backend: https://github.com/bigabig/wikihow-qa/tree/master/backend#build-jar-file
-- Build the Microservices
-  - TextRank Summarization: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-textrank#build-docker
-  - Pointer-Generator Summarization: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-ner#build-docker
-  - BERT Summarization: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-bertsum#build-docker
-  - Named Entity Recognition: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-ner#build-docker
-  - Keyword Extraction: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-keywords#build-docker
-  - ROUGE Evaluation: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-evaluation#build-docker
+## Feature 3: Evaluate summarization techniques
+An image of the the "User Studies" or Analysis component of WikiHow QA can be seen below.
+![Alt text](images/feature31.png?raw=true "Input Mask for Analysis") 
+The output is organized a little bit differnt compared to the other components.
+One or more summaries are shown on the left side and the full answer is shown on the right side.
+In contrast to the previous features, this component has a very complex input mask.
+Again, there is an input field for the question as well as a drop down menu to select the summarization method.
+Moreover, there are various checkboxes to select different types of Named Entities.
+The selected types are visualized in the summary as well as the the full answer as seen in the image above.
+Also, it is possible to hightlight keywords in the texts as in the image above or just display them as a list as it can be seen below.
+![Alt text](images/feature32.png?raw=true "Keyword Lists") 
+Lastly, the user can choose to show ROUGE scores.
+These ROUGE scores are calculated by comparing the summary generated by a certain method with the gold summary.
+Therefore, the "gold" or "cheating" method will always have the maximum ROUGE score.
+Below you can see the visualization of the ROUGE scores for a certain summarization technique.
+![Alt text](images/feature33.png?raw=true "ROUGE Score Visualization") 
+Please also note, that there is a possibility to submit a rating for each summary (at the bottom of each summary).
+These ratings are collected and can be viewed in the Statistics component, which is the fourth feature of WikiHow QA.
 
-#### Step 1.2 Start the Docker containers
-- Navigate to wikihow-qa/docker
-- Download & start all necessary containers: docker-compose up -d
-- Check if all containers are running: docker ps
-  - you should see: elasticsearch, mysql, server, textrank, network, bertsum, ner, eval, keywords
+## Feature 4: Statistics of summarization techniques
+The statistics component of WikiHow QA visualizes collected ratings.
+Both, the total ratings graph as well as the average ratings per day graph for a certain summarization techniqu are shown below.
+![Alt text](images/feature41.png?raw=true "Statistics Visualization") 
+On the left side, the total ratings graph shows how many and which star ratings a certain summarization technique recieved.
+On the right side, the average ratings per day graph visualizes the change of the ratings over time for a certain summarization technique.
+Next to that, basic statistics like the number of total votes are displayed.
+By scrolling down this page, the user can view the visualizations for other summarization techniques.
 
-### Step 2: Import the data
-As the name suggests, the Wikihow QA Application uses WikiHow as the main dataset. For the application to work, it is necessary to import the data into the elasticsearch docker. The original dataset can be found here: https://github.com/mahnazkoupaee/WikiHow-Dataset
-- Download the dataset here: 
-- Unzip the archive to wikihow-qa/
-  - Now you should have a folder wikihow-qa/dataset/articles_full/ that contains many *.json files.
-- Navigate to tools: cd wikihow-qa/tools
-- Create new virtual environment: python -m venv env
-  - Please make sure that you use Python > 3, you might need to type python3 instead of python! Check version with python3 --version or python --version
-- Activate the new virtual environment: source env/bin/activate
-- Install dependencies: pip install -r requirements.txt
-  - Please make sure that you use the correct pip in the following command. You might need to type pip3 instead of pip!
-- Before executing the import script, please make sure that the elasticsearch docker is running: docker ps
-- Import all data: python import_wikihow_elasticsearch_autocomplete.py -d wikihow-qa/dataset/articles_full/ -i autohow2 -t 60
-- Once the import is finished, you can deactivate the virtual environment: deactivate
+## FAQ
 
-### Step 3: Use the application
-All docker containers are running, the data is imported... You are now ready to use the WikiHow QA Application! You can find a detailed user guide that helps you exploring all functionalities here: 
-- Use the application: http://localhost:8080/wikihowqa/index.html
-- Or view the REST API: http://localhost:8080/wikihowqa/swagger-ui.html
-- Now you can start & stop the application as you like
-  - cd wikihow-qa/docker/
-  - Start: docker-compose up -d
-  - Stop: docker-compose down
+### What is WikiHow QA?
+The WikiHow QA Application is primarily a Question Answering (QA) system, that is able to answer "How to..." questions. 
+However, because of it special approach - namely summarizing long answers - it has also other interesting features.
+WikiHow QA is capable of summarizing your provided text.
+Moreover, it has an evaluation component, that allows to compare different summarization methods based on Keywords, ROUGE Scores and Named Entities.
+Lastly, it collects new summaries and ratings for summaries from users, which are also used to evaluate the summarization methods.
+
+### How does WikiHow QA work?
+The WikiHow QA Application does not work like ordinary QA systems. 
+It utilizes a huge database of already answered "How to..." questions to give the correct answer.
+But since these anwers tend to be very long and detailed, the WikiHow QA Application utilizes different summarization techniques, to reduces these answers to a more appealing size.
+In short: Depending on the question WikiHow QA retrieves an already existing answer and then summarizes it.
