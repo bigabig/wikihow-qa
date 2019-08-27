@@ -1,19 +1,9 @@
 # Wikihow Evaluation
+This is a microservice for ROUGE Evaluation.
 
-## Set up ROUGE
-See this link: https://poojithansl7.wordpress.com/2018/08/04/setting-up-rouge/
-
-## Set up PyRouge
-See the README here: https://github.com/bheinzerling/pyrouge
-
-## Create Summaries
-
-### With TextRank
-- cd ~/Development/git/wikihow-qa/services/wikihow-textrank
-- source env/bin/activate
-- python3 app/generation.py 
--i ~/Development/git/wikihow-qa/dataset/articles/ 
--o ~/Development/git/wikihow-qa/services/wikihow-evaluation/evaluation_data/textrank
-
-## Run Evaluation
- python3 evaluation.py -m evaluation_data/textrank/model -s evaluation_data/textrank/system
+## BUILD DOCKER
+- Change into correct diretory: cd wikihow-qa/services/wikihow-evaluation/
+- Build the container: docker build -t bigabig/wikihow-eval:latest .
+- (Optional) Test if the container is working:
+  - Run the container: docker run -p9000:9000 bigabig/wikihow-eval:latest
+  - View example output: visit http://localhost:9000/

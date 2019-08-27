@@ -75,7 +75,8 @@ def main():
                         }
                     },
                     "suggest_title": {
-                        "type": "completion"
+                        "type": "completion",
+                        "max_input_length": 100
                     },
                 }
             }
