@@ -10,6 +10,7 @@ To run the Wikihow QA Application, you need to install the following:
 - docker-compose
 - Python3
 - Python3 virtual environment (venv)
+
 Also, you need to clone this repo:
 - git clone https://github.com/bigabig/wikihow-qa.git
 
@@ -21,15 +22,15 @@ Building all docker containers will take significantly more time. Skip Step 1.1 
 
 #### Step 1.1 Building Docker containers (Advanced, you can skip this)
 This is the advanced guide on building all docker containers yourself. The provided links contain detailed instructions on how to build the respective container.
-- Build the Frontend: https://github.com/bigabig/wikihow-qa/tree/master/frontend#building-the-frontend
-- Build the Backend: https://github.com/bigabig/wikihow-qa/tree/master/backend#build-jar-file
+- Build the Frontend: [LINK](frontend/README.md) https://github.com/bigabig/wikihow-qa/tree/master/frontend#building-the-frontend
+- Build the Backend: [LINK](backend/README.md) https://github.com/bigabig/wikihow-qa/tree/master/backend#build-jar-file
 - Build the Microservices
-  - TextRank Summarization: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-textrank#build-docker
-  - Pointer-Generator Summarization: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-ner#build-docker
-  - BERT Summarization: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-bertsum#build-docker
-  - Named Entity Recognition: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-ner#build-docker
-  - Keyword Extraction: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-keywords#build-docker
-  - ROUGE Evaluation: https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-evaluation#build-docker
+  - TextRank Summarization: [LINK](services/wikihow-textrank/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-textrank#build-docker
+  - Pointer-Generator Summarization: [LINK](services/wikihow-network/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-ner#build-docker
+  - BERT Summarization: [LINK](services/wikihow-bertsum/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-bertsum#build-docker
+  - Named Entity Recognition: [LINK](services/wikihow-ner/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-ner#build-docker
+  - Keyword Extraction: [LINK](services/wikihow-keywords/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-keywords#build-docker
+  - ROUGE Evaluation: [LINK](services/wikihow-evaluation/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-evaluation#build-docker
 
 #### Step 1.2 Start the Docker containers
 - Navigate to wikihow-qa/docker
@@ -38,8 +39,8 @@ This is the advanced guide on building all docker containers yourself. The provi
   - you should see: elasticsearch, mysql, server, textrank, network, bertsum, ner, eval, keywords
 
 ### Step 2: Import the data
-As the name suggests, the Wikihow QA Application uses WikiHow as the main dataset. For the application to work, it is necessary to import the data into the elasticsearch docker. The original dataset can be found here: https://github.com/mahnazkoupaee/WikiHow-Dataset
-- Download the dataset here: https://drive.google.com/file/d/1VvPrW1MZAS9PHdUWridi6XBXzLJZdmUk/view?usp=sharing
+As the name suggests, the Wikihow QA Application uses WikiHow as the main dataset. For the application to work, it is necessary to import the data into the elasticsearch docker. The original dataset can be found here: [LINK](https://github.com/mahnazkoupaee/WikiHow-Dataset)
+- Download the dataset here: [LINK](https://drive.google.com/file/d/1VvPrW1MZAS9PHdUWridi6XBXzLJZdmUk/view?usp=sharing)
 - Unzip the archive to wikihow-qa/
   - Now you should have a folder wikihow-qa/dataset/articles_full/ that contains many *.json files.
 - Navigate to tools: cd wikihow-qa/tools
