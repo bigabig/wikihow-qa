@@ -22,15 +22,15 @@ Building all docker containers will take significantly more time. Skip Step 1.1 
 
 #### Step 1.1 Building Docker containers (Advanced, you can skip this)
 This is the advanced guide on building all docker containers yourself. The provided links contain detailed instructions on how to build the respective container.
-- Build the Frontend: [LINK](frontend/README.md) https://github.com/bigabig/wikihow-qa/tree/master/frontend#building-the-frontend
-- Build the Backend: [LINK](backend/README.md) https://github.com/bigabig/wikihow-qa/tree/master/backend#build-jar-file
+- Build the Frontend: [LINK](frontend/README.md)
+- Build the Backend: [LINK](backend/README.md)
 - Build the Microservices
-  - TextRank Summarization: [LINK](services/wikihow-textrank/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-textrank#build-docker
-  - Pointer-Generator Summarization: [LINK](services/wikihow-network/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-ner#build-docker
-  - BERT Summarization: [LINK](services/wikihow-bertsum/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-bertsum#build-docker
-  - Named Entity Recognition: [LINK](services/wikihow-ner/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-ner#build-docker
-  - Keyword Extraction: [LINK](services/wikihow-keywords/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-keywords#build-docker
-  - ROUGE Evaluation: [LINK](services/wikihow-evaluation/README.md) https://github.com/bigabig/wikihow-qa/tree/master/services/wikihow-evaluation#build-docker
+  - TextRank Summarization: [LINK](services/wikihow-textrank/README.md)
+  - Pointer-Generator Summarization: [LINK](services/wikihow-network/README.md)
+  - BERT Summarization: [LINK](services/wikihow-bertsum/README.md)
+  - Named Entity Recognition: [LINK](services/wikihow-ner/README.md)
+  - Keyword Extraction: [LINK](services/wikihow-keywords/README.md)
+  - ROUGE Evaluation: [LINK](services/wikihow-evaluation/README.md)
 
 #### Step 1.2 Start the Docker containers
 - Navigate to wikihow-qa/docker
@@ -54,7 +54,7 @@ As the name suggests, the Wikihow QA Application uses WikiHow as the main datase
 - Once the import is finished, you can deactivate the virtual environment: deactivate
 
 ### Step 3: Use the application
-All docker containers are running, the data is imported... You are now ready to use the WikiHow QA Application! You can find a detailed user guide that helps you exploring all functionalities here: https://github.com/bigabig/wikihow-qa/blob/master/USER_GUIDE.md
+All docker containers are running, the data is imported... You are now ready to use the WikiHow QA Application! You can find a detailed user guide that helps you exploring all functionalities here: [LINK](USER_GUIDE.md)
 - Use the application: http://localhost:8080/wikihowqa/index.html
 - Or view the REST API: http://localhost:8080/wikihowqa/swagger-ui.html
 - Now you can start & stop the application as you like
