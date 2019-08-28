@@ -35,7 +35,7 @@ services:
       - servicebertsum=http://bertsum:5000
       - serviceeval=http://eval:9000
     ports:
-      - 8080:8080
+      - 10019:8080
     networks:
       - anet
   # END: SERVER

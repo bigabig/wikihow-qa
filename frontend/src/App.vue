@@ -350,6 +350,7 @@ export default {
   },
   data() {
     return {
+      serverURL: process.env.VUE_APP_BROKER_URL,
       minHeight: 0,
       showRouge: false,
       wikihowArticle: {
@@ -749,14 +750,14 @@ export default {
       const input = this.input[this.currentPage][this.evalMode];
       if (input.length < 5) return;
       console.log(`Fetching autocompletion ${input}`);
-      const data = await getData(`http://localhost:8080/wikihowqa/suggest?text=${input}&count=${5}`);
+      const data = await getData(this.serverURL + `/suggest?text=${input}&count=${5}`);
       console.log(data);
       this.autocomplete = data;
     },
     async fetchWikihowArticle(question) {
       // get article from wikidata
       console.log('Fetching new WikiHow Artice');
-      const data = await postData('http://localhost:8080/wikihowqa/articles', {
+      const data = await postData(this.serverURL + '/articles', {
         count: 1,
         topic: question,
       });
@@ -772,7 +773,7 @@ export default {
     async fetchSummary(text, method) {
       // get summary from the certain method
       console.log(`Fetching new Summary with method ${method}`);
-      const data = await postData('http://localhost:8080/wikihowqa/summarize', {
+      const data = await postData(this.serverURL + '/summarize', {
         method,
         text,
       });
@@ -787,7 +788,7 @@ export default {
     async fetchEntities(text) {
       // get entities from text
       console.log('Fetching new Entities');
-      const data = await postData('http://localhost:8080/wikihowqa/ner', {
+      const data = await postData(this.serverURL + '/ner', {
         text,
       });
 
@@ -800,7 +801,7 @@ export default {
     async fetchKeywords(text) {
       // get entities from text
       console.log('Fetching Keywords');
-      const data = await postData('http://localhost:8080/wikihowqa/keywords', {
+      const data = await postData(this.serverURL + '/keywords', {
         count: 5,
         lang: 'eng',
         text,
@@ -815,7 +816,7 @@ export default {
     async fetchEvaluation(summary, gold) {
       // get entities from text
       console.log('Fetching Evaluation');
-      const data = await postData('http://localhost:8080/wikihowqa/evaluate', {
+      const data = await postData(this.serverURL + '/evaluate', {
         summary,
         gold,
       });
@@ -829,12 +830,12 @@ export default {
     },
     async fetchRatings(method) {
       console.log(`Fetching Ratings for method${method}`);
-      const data = await getData(`http://localhost:8080/wikihowqa/ratings?method=${method}`);
+      const data = await getData(this.serverURL + `/ratings?method=${method}`);
       return data;
     },
     async fetchRatingsOverTime(method) {
       console.log(`Fetching Ratings over time for method${method}`);
-      const data = await getData(`http://localhost:8080/wikihowqa/ratingsOverTime?method=${method}`);
+      const data = await getData(this.serverURL + `/ratingsOverTime?method=${method}`);
       return data;
     },
     async rateMethod(page, mode, method, rating) {
@@ -842,7 +843,7 @@ export default {
 
       console.log(`Rating Method ${method} with ${rating} stars`);
       this.ratingAllowed[page][mode][method] = false;
-      const message = await postData('http://localhost:8080/wikihowqa/rate', {
+      const message = await postData(this.serverURL + '/rate', {
         method,
         rating,
         title: this.wikihowArticle.title,
@@ -864,7 +865,7 @@ export default {
 
       console.log(`Submitting Summary for Article ${this.wikihowArticle.title} and Method ${currentMethod}`);
       this.summaryAllowed[currentMethod] = false;
-      const message = await postData('http://localhost:8080/wikihowqa/sum', {
+      const message = await postData(this.serverURL + '/sum', {
         method: currentMethod,
         summary: this.betterSummary,
         title: this.wikihowArticle.title,
