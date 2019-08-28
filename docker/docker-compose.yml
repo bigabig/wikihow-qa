@@ -160,7 +160,7 @@ services:
       - INSTALLER_DATA=./data/
       - INSTALLER_TIMEOUT=60
     volumes:
-      - ./import_data:/data
+      - ./dataset/articles_full:/data
     depends_on:
       - "elasticsearch"
     networks:
