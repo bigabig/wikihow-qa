@@ -145,11 +145,6 @@ services:
   # BEGIN: SETUP
   setup:
     image: bigabig/wikihow-installer:latest
-    host = os.environ['INSTALLER_ELASTICHOST']
-    port = os.environ['INSTALLER_ELASTICPORT']
-    index = os.environ['INSTALLER_INDEX']
-    data = os.environ['INSTALLER_DATA']
-    timeout = int(float(os.environ['INSTALLER_INDEX']))
     environment:
       - INSTALLER_ELASTICHOST=elasticsearch
       - INSTALLER_ELASTICPORT=9200
