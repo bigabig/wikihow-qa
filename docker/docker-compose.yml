@@ -17,7 +17,7 @@ services:
   server:
     image: bigabig/wikihow-server:latest
     environment:
-      - WAIT_COMMAND=[ $$(curl --write-out %{http_code} --silent --output /dev/null http://elasticsearch:9200/_cat/health?h=st) = 200 ]
+      - WAIT_COMMAND=[ $$(curl --write-out %{http_code} --silent --output /dev/null http://elasticsearch:9200/autohow2?pretty) = 200 ]
       - WAIT_START_CMD=java -Djava.security.egd=file:/dev/./urandom -jar app.jar
       - WAIT_SLEEP=2
       - WAIT_LOOPS=50
