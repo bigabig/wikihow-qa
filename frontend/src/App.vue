@@ -197,6 +197,18 @@
                     <ul>
                       <li v-for="sentence in summaries[currentPage][evalMode][summarizationMethod]" v-html="sentence"></li>
                     </ul>
+                    <template v-if="showKeywordList">
+                      <hr class="w3-clear">
+                      <span class="w3-opacity">Keywords:</span>
+                      <ul style="margin-top:0;">
+                        <li v-for="keyword in foundKeywords[currentPage][evalMode][summarizationMethod]">{{keyword.word}} - {{keyword.score}}</li>
+                      </ul>
+                    </template>
+                    <template v-if="evaluation[currentPage][evalMode][summarizationMethod] !== 'string' && showRouge === 'true'">
+                      <hr class="w3-clear">
+                      <span class="w3-opacity">ROUGE Evaluation:</span>
+                      <pre style="margin-top:0; white-space: pre-wrap; word-wrap: break-word;text-align: justify;">{{evaluation[currentPage][evalMode][summarizationMethod]}}</pre>
+                    </template>
                     <hr class="w3-clear">
                     <p style="font-size:18px; margin-bottom: 8px;">
                       <span class="w3-opacity">Submit a rating: </span>
@@ -754,6 +766,7 @@ export default {
         this.wikihowArticle = data.articles[0];
         return data.articles[0];
       }
+      this.showErrorMessage('Cannot find an answer to that question.');
       throw new Error('WikiHow Article is empty!');
     },
     async fetchSummary(text, method) {
@@ -959,8 +972,9 @@ export default {
       if (currentMethod === 'all') {
         for (const method of this.allMethods) {
           if (method === 'gold') {
-            const { summary } = article;
-            const processedSummary = await this.processEntitiesAndKeywords(summary, method);
+            const processedSummary = await this.processEntitiesAndKeywords(article.summary, method);
+            const evaluation = await this.fetchEvaluation(article.summary, article.summary);
+            this.evaluation[1][0][method] = evaluation.formatted;
             this.summaries[1][0][method] = processedSummary.split('. ').filter(sentence => sentence.length > 0);
           } else {
             // Get Summary
@@ -972,13 +986,16 @@ export default {
               console.log(`Using long article for summarization with ${method}`);
               generatedSummary = await this.generateSummary(article.full_article, method);
             }
+            const evaluation = await this.fetchEvaluation(generatedSummary.summary, article.summary);
+            this.evaluation[1][0][method] = evaluation.formatted;
             this.summaries[1][0][method] = generatedSummary.processedSummary.split('. ').filter(sentence => sentence.length > 0);
           }
         }
       // the gold method
       } else if (currentMethod === 'gold') {
-        const { summary } = article;
-        const processedSummary = await this.processEntitiesAndKeywords(summary, currentMethod);
+        const processedSummary = await this.processEntitiesAndKeywords(article.summary, currentMethod);
+        const evaluation = await this.fetchEvaluation(article.summary, article.summary);
+        this.evaluation[1][0][currentMethod] = evaluation.formatted;
         this.summaries[1][0][currentMethod] = processedSummary.split('. ').filter(sentence => sentence.length > 0);
       // or just the selected method
       } else {
@@ -991,11 +1008,7 @@ export default {
           console.log('Using long article for summarization');
           generatedSummary = await this.generateSummary(article.article, currentMethod);
         }
-
         const evaluation = await this.fetchEvaluation(generatedSummary.summary, article.summary);
-        console.log(evaluation.formatted);
-        console.log(evaluation.evaluation);
-
         this.evaluation[1][0][currentMethod] = evaluation.formatted;
         this.summaries[1][0][currentMethod] = generatedSummary.processedSummary.split('. ').filter(sentence => sentence.length > 0);
       }
