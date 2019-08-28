@@ -146,6 +146,10 @@ services:
   setup:
     image: bigabig/wikihow-installer:latest
     environment:
+      - WAIT_COMMAND=[ $(curl --write-out %{http_code} --silent --output /dev/null http://elasticsearch:9200/_cat/health?h=st) = 200 ]
+      - WAIT_START_CMD=python import_wikihow_elasticsearch_autocomplete.py
+      - WAIT_SLEEP=2
+      - WAIT_LOOPS=10
       - INSTALLER_ELASTICHOST=elasticsearch
       - INSTALLER_ELASTICPORT=9200
       - INSTALLER_ELASTICINDEX=autohow2

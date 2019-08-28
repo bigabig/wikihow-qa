@@ -4,8 +4,8 @@ from elasticsearch import Elasticsearch
 
 def main():
     host = os.environ['INSTALLER_ELASTICHOST']
-    port = int(float(os.environ['INSTALLER_ELASTICPORT']
-    index = os.environ['INSTALLER_ELASTICINDEX']))
+    port = int(float(os.environ['INSTALLER_ELASTICPORT']))
+    index = os.environ['INSTALLER_ELASTICINDEX']
     data = os.environ['INSTALLER_DATA']
     timeout = int(float(os.environ['INSTALLER_TIMEOUT']))
 
@@ -14,7 +14,7 @@ def main():
         return
 
     # init es
-    es = Elasticsearch([host], port)
+    es = Elasticsearch([host], port=port)
 
     # define mapping
     mapping = {

@@ -4,12 +4,12 @@ FROM python:3.6
 
 COPY requirements.txt requirements.txt
 
+COPY wait_to_start.sh wait_to_start.sh
+
 RUN pip install -r requirements.txt
 
 COPY import_wikihow_elasticsearch_autocomplete.py import_wikihow_elasticsearch_autocomplete.py
 
 EXPOSE 5000
 
-ENTRYPOINT [ "python" ]
-
-CMD [ "import_wikihow_elasticsearch_autocomplete.py" ]
+CMD [ "wait_to_start.sh" ]
