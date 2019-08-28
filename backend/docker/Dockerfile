@@ -4,6 +4,9 @@
 
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
+RUN apk add --update \
+    curl \
+    && rm -rf /var/cache/apk/*
 COPY wait_to_start.sh wait_to_start.sh
 COPY wikihowqa-1.0.jar app.jar
 EXPOSE 8080
