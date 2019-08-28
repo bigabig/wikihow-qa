@@ -39,9 +39,9 @@ services:
   # BEGIN: ELASTICSEARCH
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.2.3
-    ports:
-      - 9200:9200
-      - 9300:9300
+    #ports:
+    #  - 9200:9200
+    #  - 9300:9300
     networks:
       - anet
     environment:
@@ -67,8 +67,8 @@ services:
   # BEGIN: mysql
   mysql:
     image: "mysql:5.7"
-    ports:
-      - 3306:3306
+    #ports:
+    #  - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=wikihowqa
@@ -91,8 +91,8 @@ services:
   # BEGIN: TEXTRANK
   textrank:
     image: bigabig/wikihow-textrank:latest
-    ports:
-      - 5000:5000
+    #ports:
+    #  - 5000:5000
     networks:
       - anet
   # END: TEXTRANK
@@ -100,8 +100,8 @@ services:
   # BEGIN: NETWORK
   network:
     image: bigabig/wikihow-network:latest
-    ports:
-      - 5001:5000
+    #ports:
+    #  - 5001:5000
     networks:
       - anet
   # END: NETwORK
@@ -109,8 +109,8 @@ services:
   # BEGIN: BERTSUM
   bertsum:
     image: bigabig/wikihow-bertsum:latest
-    ports:
-      - 5002:5000
+    #ports:
+    #  - 5002:5000
     networks:
       - anet
   # END: BERTSUM
@@ -118,8 +118,8 @@ services:
   # BEGIN: KEYWORDS
   keywords:
     image: bigabig/wikihow-keywords:latest
-    ports:
-      - 8090:8080
+    #ports:
+    #  - 8090:8080
     networks:
       - anet
   # END: KEYWORDS
@@ -127,8 +127,8 @@ services:
   # BEGIN: NER
   ner:
     image: bigabig/wikihow-ner:latest
-    ports:
-      - 5003:5000
+    #ports:
+    #  - 5003:5000
     networks:
       - anet
   # END: NER
@@ -136,8 +136,8 @@ services:
   # BEGIN: EVAL
   eval:
     image: bigabig/wikihow-eval:latest
-    ports:
-      - 5004:9000
+    #ports:
+    #  - 5004:9000
     networks:
       - anet
   # END: EVAL
