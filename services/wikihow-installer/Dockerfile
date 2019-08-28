@@ -12,4 +12,4 @@ COPY import_wikihow_elasticsearch_autocomplete.py import_wikihow_elasticsearch_a
 
 EXPOSE 5000
 
-CMD [ "wait_to_start.sh" ]
+CMD [ "sh", "wait_to_start.sh" ]

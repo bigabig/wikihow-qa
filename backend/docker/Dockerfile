@@ -4,6 +4,8 @@
 
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
+COPY wait_to_start.sh wait_to_start.sh
 COPY wikihowqa-1.0.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","app.jar"]
+CMD [ "sh", "wait_to_start.sh" ]
+# ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","app.jar"]
