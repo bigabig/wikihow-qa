@@ -4,5 +4,5 @@ torchvision
 pytorch-pretrained-bert==0.6.2
 tensorboardX==1.7
 Flask==1.0.3
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 pyrouge==0.1.3
